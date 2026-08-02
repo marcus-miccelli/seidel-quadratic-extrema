@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-08-02",
+  "normalization": {
+    "pair_sum_objective": "F(n) = min_A max_x |sum_{i<j} a_ij x_i x_j|",
+    "full_quadratic_objective": "min_A M(A) = 2 F(n)"
+  },
+  "field_plus_spin_lower_bound": {
+    "status": "independently_reconstructed_and_accepted",
+    "source_repository": "https://github.com/rom1504/math",
+    "source_revision": "96f49182cc559b232b13188ceeec11ed76b88129",
+    "ledger_sha256": "9e08deab115466e686561c727dd53cb9d9114ef690a7532ecc55b677a2b3e003",
+    "claim": "liminf F(n)/n^(3/2) >= gamma_star",
+    "gamma_star": 0.336493364432183,
+    "t_star": 0.876900985552862,
+    "defining_equation": "2 phi(t_star) = t_star (2 Phi(t_star) - 1)",
+    "audit_checks": [
+      "spectral bootstrap M(A) >= ||A||_op^3 / n",
+      "mean-square row decorrelation on every bounded normalized-objective sequence",
+      "opposite-orientation pair baseline cancellation",
+      "first-order pair-response factor and O(1/m) remainder",
+      "uniform smooth two-dimensional Lindeberg replacement",
+      "Gaussian covariance interpolation averaged over ordered pairs",
+      "pair-sum versus full-quadratic factor of two",
+      "independent numerical solution of the optimizer equation"
+    ]
+  },
+  "finite_order_11": {
+    "status": "standalone_external_enumeration_reproduced",
+    "source_repository": "https://github.com/CurtisAccelerate/antipodal-cut-code-k11",
+    "source_revision": "977927bd16188eda7334b040601e9db6a321aaf4",
+    "source_hashes": {
+      "reproducibility/lower_bound_enumerator.cpp": "78e761f9a6340384bbc38452c43f0ea1aa306153c6940ac5f19f6ee1096cbce0",
+      "reproducibility/m11_witness.json": "6f9b0baabbf411f12a3c4120fa1a45c767ca5d0f5612c5e5c698abbd997b6c2a"
+    },
+    "witness_command": "python reproducibility/verify_witness.py",
+    "witness_output": {
+      "spin_vectors_checked": 1024,
+      "minimum": -15,
+      "maximum": 17,
+      "max_abs": 17
+    },
+    "lower_bound_command": "g++ -std=c++20 -O3 -o lower_bound_enumerator reproducibility/lower_bound_enumerator.cpp && lower_bound_enumerator",
+    "lower_bound_output": {
+      "nodes": 50778686,
+      "complete": 936720,
+      "pass4": 936720,
+      "passall": 0
+    },
+    "conclusion": "F(11) = 17"
+  },
+  "finite_orders_12_to_14": {
+    "status": "external_witness_and_solver_rerun",
+    "source_repository": "https://github.com/rom1504/math",
+    "source_revision": "96f49182cc559b232b13188ceeec11ed76b88129",
+    "software": {
+      "ortools": "9.15.6755",
+      "numpy": "2.5.1",
+      "computations/exact_mn_cpsat.py_sha256": "f3bf74e9e61906bc9fbbc6badb21b0b93591c60c84159955d9aae361d94e55f7",
+      "computations/exact_mn_milp.py_sha256": "2d8fe9762e97f22a1c4aa52ed0eb7dc3a62e4fde6659c29ac4c75b7f11adf8eb"
+    },
+    "order_12": {
+      "witness_matrix_sha256": "ecd56b2807f35fef074e1d71fa04b4f9158d10ce65f4712e8a9cec4e5c6c2850",
+      "verified_cap": 18,
+      "lower_bound_basis": "F(12) >= F(11) = 17 and every order-12 pair sum is even",
+      "conclusion": "F(12) = 18"
+    },
+    "order_13_cap_18_cases": [
+      {"root_negative_degree": 0, "status": "INFEASIBLE", "wall_seconds": 0.6259936, "conflicts": 0, "branches": 0},
+      {"root_negative_degree": 1, "status": "INFEASIBLE", "wall_seconds": 0.7079164, "conflicts": 0, "branches": 0},
+      {"root_negative_degree": 2, "status": "INFEASIBLE", "wall_seconds": 2.161828, "conflicts": 1, "branches": 249},
+      {"root_negative_degree": 3, "status": "INFEASIBLE", "wall_seconds": 19.4123302, "conflicts": 1579, "branches": 13200},
+      {"root_negative_degree": 4, "status": "INFEASIBLE", "wall_seconds": 64.2724093, "conflicts": 6173, "branches": 57204},
+      {"root_negative_degree": 5, "status": "INFEASIBLE", "wall_seconds": 158.4827084, "conflicts": 15914, "branches": 208678}
+    ],
+    "order_13": {
+      "witness_matrix_sha256": "7161aa7c14c379fca74e95b91331421143efc3d5da0dea61a5a5d13abcd5114e",
+      "verified_cap": 20,
+      "conclusion": "F(13) = 20"
+    },
+    "order_14": {
+      "witness_matrix_sha256": "46c729229419cd6a79eccb3114d480f8970f5ce311ff65e8851cb68193fe92c2",
+      "verified_cap": 21,
+      "lower_bound_basis": "F(14) >= F(13) = 20 and every order-14 pair sum is odd",
+      "conclusion": "F(14) = 21"
+    },
+    "caveat": "OR-Tools CP-SAT returned INFEASIBLE for all six order-13 cases but emitted no standalone proof object; this is solver-certified evidence."
+  }
+}

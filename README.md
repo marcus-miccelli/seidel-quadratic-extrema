@@ -6,14 +6,21 @@ $$F(n)=\min_{a_{ij}=\pm 1}\max_{x_i=\pm 1}\left|\sum_{1\le i\lt j\le n}a_{ij}x_i
 
 The choices of $a_{ij}$ and $x_i$ range independently over the two signs for every applicable pair and index.
 
-The central question—whether $L_n$ converges, and to what value—remains open. The presently established asymptotic window is
+The central question—whether $L_n$ converges, and to what value—remains open. Let $\phi$ and $\Phi$ denote the standard normal density and distribution function, and let $t_*=0.8769009855\ldots$ solve
 
 $$
-\frac1\pi\le \liminf_{n\to\infty}L_n
+2\phi(t_*)=t_*\bigl(2\Phi(t_*)-1\bigr).
+$$
+
+An independently reconstructed field-plus-spin rounding argument gives the presently established asymptotic window
+
+$$
+0.336493364432\ldots
+\le \liminf_{n\to\infty}L_n
 \le \limsup_{n\to\infty}L_n\le\frac12.
 $$
 
-The accompanying report separates proved statements, exhaustive computations, numerical observations, refuted approaches, and open problems. It is an independent research report and has not undergone journal peer review.
+The lower constant is $2\phi(t_*)\bigl(2\Phi(t_*)-1\bigr)$. The earlier $1/\pi$ argument remains useful because it supplies an explicit finite-order bound. The accompanying report separates proved statements, exhaustive computations, numerical observations, refuted approaches, and open problems. It is an independent research report and has not undergone journal peer review.
 
 ## Repository contents
 
@@ -23,6 +30,7 @@ The accompanying report separates proved statements, exhaustive computations, nu
 - `experiments/exact_small_n.py` — deterministic exact-result generator.
 - `results/exact_small_n.json` — results reproduced by the public code.
 - `results/reported_exact_values.json` — larger historical results with explicit evidence labels.
+- `results/external_verification.json` — pinned external sources and locally reproduced audit outputs.
 - `research/claim_register.json` — machine-readable status of the principal findings and corrections.
 - `tests/` — unit and regression tests.
 - `proofs/problem.tex` — a compact normalization specification.
@@ -49,13 +57,17 @@ Build the report with a current TeX Live installation:
 latexmk -pdf -cd paper/report.tex
 ```
 
+External research code is not vendored into this compact repository. The pinned revisions, file hashes, commands, solver versions, and concise outputs used in the external audit are recorded in `results/external_verification.json`.
+
 ## Current research priorities
 
 1. Decide whether $L_n$ converges.
-2. Prove the remaining absolute-field inequality outside the correlation regimes already covered in the report.
-3. Construct an infinite family uniformly below the spectral ceiling.
-4. Determine the proportional rectangular integrality gap, beginning at the unresolved $8\times16$ case.
-5. Decide whether the order-15 minimum cut discrepancy is 24 or 26 without repeating the infeasible enumeration.
+2. Prove a power-saving near-subadditivity theorem for $H(n)=F(n)^{2/3}$, or an equivalent summable composition recurrence.
+3. Resolve the adaptive Gibbs-bridge/noisy-code obstruction identified in the continuation map.
+4. Construct an infinite family uniformly below the spectral ceiling.
+5. Replace the remaining historical finite-order audits with compact standalone proof certificates.
+6. Determine the proportional rectangular integrality gap, beginning at the unresolved $8\times16$ case.
+7. Decide whether the order-15 minimum cut discrepancy is 24 or 26 without repeating the infeasible enumeration.
 
 Contributions should follow [CONTRIBUTING.md](CONTRIBUTING.md), especially its requirements for claim status and computational provenance.
 

@@ -9,7 +9,8 @@
     "normalized_sequence": "L_n = F(n) / n^(3/2)"
   },
   "accepted": [
-    {"id": "window.lower", "claim": "liminf L_n >= 1/pi", "basis": "two-orientation squared-Gram rounding"},
+    {"id": "window.lower", "claim": "liminf L_n >= gamma_star = 0.336493364432...", "basis": "independently reconstructed field-plus-spin rounding; gamma_star = 2 phi(t_star)(2 Phi(t_star)-1)"},
+    {"id": "window.lower_finite", "claim": "M(A) >= (2/pi)n(n-1) arcsin(1/sqrt(n-1)), hence liminf L_n >= 1/pi", "basis": "two-orientation squared-Gram rounding"},
     {"id": "window.upper", "claim": "limsup L_n <= 1/2", "basis": "Paley conference matrices, relative prime gaps, and principal restriction"},
     {"id": "finite.first_moment", "claim": "F(n) >= max_s (n-s) E|S_s| >= 2 sqrt(2)/(3 sqrt(3 pi)) n^(3/2)", "basis": "cut identity, fixed-split first moment, odd-s Wallis bound, and finite residue check"},
     {"id": "rounding.spectral_edge", "claim": "M(A) >= (2/pi)n(n-1) arcsin(1/mu(A))", "basis": "positive-semidefinite endpoint and Gaussian sign rounding"},
@@ -17,9 +18,11 @@
     {"id": "cut.block_control", "claim": "Cut(A_S)+Cut(A_T) <= Cut(A) <= Cut(A_S)+Cut(A_T)+||A_ST||_{infinity-to-1}", "basis": "signed block decomposition"},
     {"id": "sequence.regularity", "claim": "F(n) <= F(n+1) <= F(n)+n and the subsequential limit set of L_n is a closed interval", "basis": "fill-in, extension, and vanishing normalized increments"},
     {"id": "parity.unbalancedness", "claim": "For n congruent to 3 mod 4, F(n) > min_A Cut(A) and every M-minimizer is unbalanced", "basis": "quadratic congruence and even cut values at odd order"},
-    {"id": "exact.values", "claim": "min M(A) for n=2..15 is 2,6,8,8,10,18,20,24,26,34,36,40,42,54", "basis": "direct enumeration at small orders and audited threshold-emptiness certificates at larger orders"},
+    {"id": "exact.values", "claim": "min M(A) for n=2..15 is 2,6,8,8,10,18,20,24,26,34,36,40,42,54", "basis": "direct enumeration at small orders; reproduced standalone external enumeration at order 11; reproduced derived certificate at order 12; historical audits plus external solver reruns at orders 13 and 14; historical threshold audit at order 15"},
     {"id": "exact.order16", "claim": "min M(A) at order 16 is at least 56", "basis": "order-15 optimum, principal monotonicity, and congruence"},
     {"id": "exact.cut15", "claim": "min Cut(A) at order 15 lies in {24,26}", "basis": "threshold-92 emptiness, parity, and explicit value-26 witnesses"},
+    {"id": "coding.covering_radius", "claim": "F(n) = binom(n,2) - 2 rho(C_n), where C_n is the binary cut code of K_n augmented by its complement", "basis": "exact sign-to-bit conversion; the absolute value is the complement coset"},
+    {"id": "composition.sufficient", "claim": "A uniform power-saving near-subadditivity inequality for H(n)=F(n)^(2/3) implies convergence of L_n", "basis": "almost-subadditive lemma with geometrically summable normalized defect"},
     {"id": "conference.local", "claim": "Every symmetric conference sequence has liminf M(C_n)/(n sqrt(n-1)) >= 0.6894707435...", "basis": "universal aligned-local-field law and spectrally certified random flips"},
     {"id": "conference.stability", "claim": "The conference coefficient survives o(n^(3/2))-edge perturbations", "basis": "edge-Hamming estimate |M(A)-M(C)| <= 4h"},
     {"id": "conference.cumulants", "claim": "Every fixed normalized even conference cumulant has the orthogonal-model Catalan limit", "basis": "connected diagram reduction and fixed-diagram traffic universality"},
@@ -36,7 +39,9 @@
   ],
   "open": [
     {"id": "limit", "question": "Does L_n converge, and what is the limit?"},
-    {"id": "absolute_field.universal", "question": "Does the absolute-field target hold in the remaining dense overlapping-correlation regime?"},
+    {"id": "composition.power_defect", "question": "Can one prove H(m+n) <= H(m)+H(n)+O((m+n)^(1-delta)) for H(n)=F(n)^(2/3) and some delta>0, or an equivalent summable recurrence?"},
+    {"id": "composition.noisy_code", "question": "Can the least-likely-output path in the adaptive Gibbs bridge be controlled without reconstructing every posterior response?"},
+    {"id": "absolute_field.universal", "question": "Does the absolute-field target hold in the remaining dense overlapping-correlation regime? This route now gives a sub-best universal constant but retains structural value."},
     {"id": "construction", "question": "Is there an infinite family uniformly below the spectral ceiling?"},
     {"id": "rectangular", "question": "What is the proportional rectangular integrality gap, beginning with the 8 by 16 finite case?"},
     {"id": "cut15", "question": "Is the order-15 minimum cut discrepancy 24 or 26?"},
