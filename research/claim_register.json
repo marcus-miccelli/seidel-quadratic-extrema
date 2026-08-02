@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "last_reviewed": "2026-08-02",
+  "normalization": {
+    "pair_sum": "Q_A(x) = sum_{i<j} a_ij x_i x_j",
+    "full_quadratic": "x^T A x = 2 Q_A(x)",
+    "matrix_objective": "M(A) = max_x |x^T A x|",
+    "extremal_objective": "F(n) = (1/2) min_A M(A)",
+    "normalized_sequence": "L_n = F(n) / n^(3/2)"
+  },
+  "accepted": [
+    {"id": "window.lower", "claim": "liminf L_n >= 1/pi", "basis": "two-orientation squared-Gram rounding"},
+    {"id": "window.upper", "claim": "limsup L_n <= 1/2", "basis": "Paley conference matrices, relative prime gaps, and principal restriction"},
+    {"id": "finite.first_moment", "claim": "F(n) >= max_s (n-s) E|S_s| >= 2 sqrt(2)/(3 sqrt(3 pi)) n^(3/2)", "basis": "cut identity, fixed-split first moment, odd-s Wallis bound, and finite residue check"},
+    {"id": "rounding.spectral_edge", "claim": "M(A) >= (2/pi)n(n-1) arcsin(1/mu(A))", "basis": "positive-semidefinite endpoint and Gaussian sign rounding"},
+    {"id": "cut.identity", "claim": "M_+(A)+M_-(A)=4 Cut(A)", "basis": "exact bijection between pairs of cube points and signed cuts"},
+    {"id": "cut.block_control", "claim": "Cut(A_S)+Cut(A_T) <= Cut(A) <= Cut(A_S)+Cut(A_T)+||A_ST||_{infinity-to-1}", "basis": "signed block decomposition"},
+    {"id": "sequence.regularity", "claim": "F(n) <= F(n+1) <= F(n)+n and the subsequential limit set of L_n is a closed interval", "basis": "fill-in, extension, and vanishing normalized increments"},
+    {"id": "parity.unbalancedness", "claim": "For n congruent to 3 mod 4, F(n) > min_A Cut(A) and every M-minimizer is unbalanced", "basis": "quadratic congruence and even cut values at odd order"},
+    {"id": "exact.values", "claim": "min M(A) for n=2..15 is 2,6,8,8,10,18,20,24,26,34,36,40,42,54", "basis": "direct enumeration at small orders and audited threshold-emptiness certificates at larger orders"},
+    {"id": "exact.order16", "claim": "min M(A) at order 16 is at least 56", "basis": "order-15 optimum, principal monotonicity, and congruence"},
+    {"id": "exact.cut15", "claim": "min Cut(A) at order 15 lies in {24,26}", "basis": "threshold-92 emptiness, parity, and explicit value-26 witnesses"},
+    {"id": "conference.local", "claim": "Every symmetric conference sequence has liminf M(C_n)/(n sqrt(n-1)) >= 0.6894707435...", "basis": "universal aligned-local-field law and spectrally certified random flips"},
+    {"id": "conference.stability", "claim": "The conference coefficient survives o(n^(3/2))-edge perturbations", "basis": "edge-Hamming estimate |M(A)-M(C)| <= 4h"},
+    {"id": "conference.cumulants", "claim": "Every fixed normalized even conference cumulant has the orthogonal-model Catalan limit", "basis": "connected diagram reduction and fixed-diagram traffic universality"},
+    {"id": "absolute_field.cubic", "claim": "The absolute-field target holds when normalized global cubic correlation mass tends to zero", "basis": "pruning, weighted diagram CLT, and the B^3/B^4 constraint"},
+    {"id": "absolute_field.exceptions", "claim": "The cubic theorem survives deletion of o(sqrt(n)) exceptional source indices", "basis": "pointwise and covariance stability"},
+    {"id": "absolute_field.twins", "claim": "Fixed and growing twin blow-ups do not obstruct the target", "basis": "fiber CLT for fixed multiplicity and direct Boolean lift for growing multiplicity"},
+    {"id": "absolute_field.matchings", "claim": "Disjoint strong matched pairs satisfy the target under block-level global decorrelation", "basis": "residual-kernel moment ledger and Gaussian comparison"},
+    {"id": "absolute_field.components", "claim": "Block-decorrelated correlation components of size at most 265 satisfy the target", "basis": "positive residual kernel and sharp square-root minorant"},
+    {"id": "absolute_field.degree", "claim": "Strong-correlation graphs of maximum degree at most 264 satisfy the target under weak off-graph cubic mass", "basis": "bounded-degree diagram CLT and correction ledger"},
+    {"id": "absolute_field.density", "claim": "The degree bound extends to effective oriented-edge density at most 3.9698962518...", "basis": "edge-weighted correction estimate"},
+    {"id": "barrier.sdp", "claim": "max(SDP(A),SDP(-A)) >= n sqrt(n-1)", "basis": "product inequality SDP(A) SDP(-A) >= n^2(n-1)"},
+    {"id": "barrier.single_split", "claim": "The rigorous universal ceiling of the single-split route is 2/(3 sqrt(3))", "basis": "fractional relaxation equals the first moment and rectangular integrality constraints"},
+    {"id": "barrier.multisplit", "claim": "Low-degree Fourier mass, coefficient spread, and subset robustness alone cannot force growing moments", "basis": "constant-modulus and exact-flatness counterexamples"}
+  ],
+  "open": [
+    {"id": "limit", "question": "Does L_n converge, and what is the limit?"},
+    {"id": "absolute_field.universal", "question": "Does the absolute-field target hold in the remaining dense overlapping-correlation regime?"},
+    {"id": "construction", "question": "Is there an infinite family uniformly below the spectral ceiling?"},
+    {"id": "rectangular", "question": "What is the proportional rectangular integrality gap, beginning with the 8 by 16 finite case?"},
+    {"id": "cut15", "question": "Is the order-15 minimum cut discrepancy 24 or 26?"},
+    {"id": "bernoulli_ldp", "question": "Does the speed-n^2 Bernoulli lower-tail counting rate exist?"},
+    {"id": "conference_uniform", "question": "Can fixed-order conference cumulant universality be upgraded to a growing-order deterministic comparison?"}
+  ],
+  "corrected_or_refuted": [
+    {"id": "sdp.one_sided", "false_statement": "SDP(A) >= n sqrt(n-1) for every Seidel A", "correction": "Only the two-sided maximum has the universal floor; the order-5 counterexample has SDP(A)=9 exactly."},
+    {"id": "kronecker.admissibility", "false_statement": "A tensor expression of the form A tensor B + I tensor S is automatically Seidel", "correction": "Some off-diagonal entries can be zero."},
+    {"id": "regularity", "false_statement": "Switching-regularity implies spectral attainment", "correction": "The row-sum eigenvalue must also have extremal magnitude."},
+    {"id": "single_split.0335", "false_statement": "The single-split route is rigorously capped at approximately 0.335", "correction": "0.335 is numerical; the proved ceiling is 2/(3 sqrt(3))."},
+    {"id": "superadditivity", "false_statement": "The available superadditivity forces convergence", "correction": "An analytic oscillating comparison sequence satisfies the same one-sided structural properties."},
+    {"id": "fourier_moments", "false_statement": "Dense low-degree Fourier mass plus subset robustness forces sqrt(p) moment growth", "correction": "A constant-modulus symmetric construction satisfies those summaries with all Lp norms equal."}
+  ],
+  "numerical_only": [
+    {"id": "cut.balance14", "observation": "All 95199 order-14 classes with M <= 50 were balanced."},
+    {"id": "single_split.estimate", "observation": "Measured proportional rectangular ratios suggest a single-split coefficient near 0.335."},
+    {"id": "split_field.moments", "observation": "Sampled proportional split increments track Gaussian moment growth through moderate orders."}
+  ]
+}

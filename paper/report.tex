@@ -1,0 +1,742 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Open problem}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Sn}{\mathcal S_n}
+\newcommand{\E}{\mathbb E}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Cut}{\operatorname{Cut}}
+\newcommand{\sgn}{\operatorname{sign}}
+\newcommand{\SDP}{\operatorname{SDP}}
+\newcommand{\statusproved}{\textcolor{green!40!black}{\textsc{proved}}}
+\newcommand{\statuscomputed}{\textcolor{blue!65!black}{\textsc{exhaustive computation}}}
+\newcommand{\statusnumerical}{\textcolor{orange!80!black}{\textsc{numerical}}}
+\newcommand{\statusopen}{\textcolor{red!70!black}{\textsc{open}}}
+\newcommand{\statusrefuted}{\textcolor{purple!70!black}{\textsc{refuted}}}
+
+\title{\textbf{Extremal Seidel Quadratic Forms on the Boolean Cube}\\
+\large Bounds, Exact Values, Barriers, and Open Problems}
+\author{Marcus Miccelli}
+\date{2 August 2026}
+
+\hypersetup{
+  pdftitle={Extremal Seidel Quadratic Forms on the Boolean Cube},
+  pdfauthor={Marcus Miccelli},
+  pdfsubject={Bounds, exact values, barriers, and open problems},
+  pdfkeywords={Seidel matrix, Boolean cube, quadratic form, discrepancy}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For $n\ge2$, define
+\[
+ F(n)=\min_{a_{ij}\in\{-1,1\}}
+ \max_{x\in\{-1,1\}^n}
+ \left|\sum_{1\le i<j\le n}a_{ij}x_ix_j\right|,
+ \qquad L_n=F(n)n^{-3/2}.
+\]
+The existence and value of $\lim_n L_n$ remain open.  This report records a
+set of internally audited bounds, structural identities, exact computations,
+counterexamples, and continuation problems.  The main universal result is
+\[
+ \frac1\pi\le\liminf_{n\to\infty}L_n
+ \le\limsup_{n\to\infty}L_n\le\frac12.
+\]
+The lower endpoint follows from a two-orientation squared-Gram rounding and
+the upper endpoint from Paley conference matrices and principal restriction.
+Exact values are reported through order $15$.  A second part of the report
+maps the remaining absolute-field problem: it is proved in several diffuse,
+bounded-component, bounded-degree, and twin-fibre regimes, while a genuinely
+dense overlapping-correlation regime remains.  The report also records
+barriers that rule out several natural spectral, compositional,
+superadditive, and low-degree Fourier approaches.
+\end{abstract}
+
+\noindent\fbox{\parbox{0.95\textwidth}{%
+\textbf{Status.} This is an independent research report, not a journal-refereed
+paper.  Statements are labelled as proved, exhaustive computation, numerical,
+open, or refuted.  ``Internally audited'' means that normalizations and stated
+dependencies were re-derived or checked independently during the project; it
+does not replace external peer review.  The public repository reproduces the
+exact search only through order $6$.  Larger exhaustive results are reported
+with their historical certificate structure, but the multi-gigabyte search
+levels are not distributed here.
+}}
+
+\tableofcontents
+
+\section{Problem, normalization, and interpretations}
+
+\begin{definition}
+A \emph{Seidel matrix} of order $n$ is a matrix $A\in\R^{n\times n}$ such that
+$A=A^{\mathsf T}$, $A_{ii}=0$, and $A_{ij}\in\{-1,1\}$ for $i\ne j$.
+The set of such matrices is denoted by $\Sn$.
+\end{definition}
+
+For $A\in\Sn$ and $x\in\{-1,1\}^n$, put
+\[
+ Q_A(x)=\sum_{i<j}A_{ij}x_ix_j=\frac12x^{\mathsf T}Ax,
+ \qquad
+ M(A)=\max_x|x^{\mathsf T}Ax|.
+\]
+Also write
+\[
+ M_+(A)=\max_xx^{\mathsf T}Ax,
+ \qquad
+ M_-(A)=-\min_xx^{\mathsf T}Ax.
+\]
+The normalization ledger is therefore
+\begin{equation}\label{eq:normalization}
+ F(n)=\frac12\min_{A\in\Sn}M(A),
+ \qquad L_n=\frac{F(n)}{n^{3/2}}.
+\end{equation}
+Every factor of two in this report is with respect to
+\eqref{eq:normalization}.
+
+The problem has several equivalent or neighbouring interpretations.
+It is a discrepancy problem for a two-colouring of $E(K_n)$, a deterministic
+Ising ground-state minimization, and the minimum $L^\infty$ norm of a
+homogeneous order-two Rademacher chaos.  Volberg's Boolean Sidon quantity
+$T_{n,2}$ is exactly $F(n)$ \cite{volberg}; Astashkin and Lykov establish the
+$n^{3/2}$ order up to universal constants in a more general weighted setting
+\cite{astashkin-lykov}.  The induced-subset discrepancy studied by
+Erd\H{o}s and Spencer is related but not identical \cite{erdos-spencer}.
+
+Switching $A\mapsto DAD$, where $D$ is diagonal with entries $\pm1$, and
+simultaneous row/column permutation both preserve $M$, $M_\pm$, and the cut
+quantity below.  Thus the natural finite objects are switching classes
+(two-graphs), modulo permutation when classification is desired.
+
+\section{Principal conclusions}
+
+\begin{theorem}[universal window]\label{thm:window}
+For every $n\ge2$ and every $A\in\Sn$,
+\begin{equation}\label{eq:squared-gram-bound}
+ M(A)\ge \frac{2}{\pi}n(n-1)
+ \arcsin\!\left(\frac1{\sqrt{n-1}}\right)
+ \ge \frac{2}{\pi}n\sqrt{n-1}.
+\end{equation}
+Consequently
+\[
+ \liminf_{n\to\infty}L_n\ge\frac1\pi.
+\]
+There are Seidel matrices of every sufficiently large order, after principal
+restriction from nearby Paley conference orders, for which
+\[
+ F(n)\le\left(\frac12+o(1)\right)n^{3/2}.
+\]
+Hence
+\[
+ \frac1\pi\le\liminf L_n\le\limsup L_n\le\frac12.
+\]
+\end{theorem}
+
+The existence of the limit is not asserted.  The exact data do not presently
+distinguish convergence from persistent arithmetic oscillation.
+
+\subsection{Exact values}
+
+The following values are classified as \statuscomputed.  Orders $2$ through
+$6$ are regenerated by the public code.  Orders $7$ through $15$ come from
+historical exhaustive or threshold-emptiness computations whose proof
+structure is summarized in Section~\ref{sec:computation}.
+
+\begin{center}
+\begin{tabular}{c|rrrrrrrrrrrrrr}
+\toprule
+$n$&2&3&4&5&6&7&8&9&10&11&12&13&14&15\\
+\midrule
+$\min_A M(A)$&2&6&8&8&10&18&20&24&26&34&36&40&42&54\\
+$F(n)$&1&3&4&4&5&9&10&12&13&17&18&20&21&27\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The minimizer is unique up to switching and permutation at orders $12$, $13$,
+and $14$: respectively a doubling of $C_6$, a vertex deletion of $C_{14}$,
+and the Paley conference matrix $C_{14}$.  At order $15$, the all-positive
+one-vertex extension of $C_{14}$ is optimal with $M=54$.  Monotonicity and
+congruence imply $\min_A M(A)\ge56$ at order $16$.
+
+For the cut discrepancy introduced below, the exact minimum for
+$n=3,\ldots,14$ is
+\[
+ 2,4,4,5,8,10,12,13,16,18,20,21.
+\]
+At order $15$ it is either $24$ or $26$; the exhaustive route needed to
+separate the two exceeded the available memory.
+
+\section{Core identities and lower bounds}
+
+\begin{lemma}[fill-in]\label{lem:fill-in}
+For $A\in\Sn$ and $u\in\{0,\pm1\}^n$,
+$|u^{\mathsf T}Au|\le M(A)$.
+\end{lemma}
+
+\begin{proof}
+Complete the zero coordinates of $u$ by independent Rademacher signs to
+obtain $x\in\{\pm1\}^n$.  All mixed and off-support terms have expectation
+zero; no diagonal term survives because $A_{ii}=0$.  Thus
+$u^{\mathsf T}Au=\E[x^{\mathsf T}Ax]$, whose absolute value is at most
+$M(A)$.
+\end{proof}
+
+The zero diagonal is essential.  For
+$\left(\begin{smallmatrix}4&-1\\-1&-3\end{smallmatrix}\right)$, the Boolean
+maximum is $3$, but the vector $(1,0)$ has quadratic value $4$.
+
+For a partition $[n]=S\sqcup T$, define
+\[
+ \Cut(A)=\max_{S\sqcup T=[n]}
+ \max_{u\in\{\pm1\}^S,\,v\in\{\pm1\}^T}
+ u^{\mathsf T}A_{S,T}v.
+\]
+
+\begin{theorem}[cut identity]\label{thm:cut-identity}
+For every $A\in\Sn$,
+\[
+ M_+(A)+M_-(A)=4\Cut(A).
+\]
+In particular,
+$\max_x|Q_A(x)|\ge\Cut(A)$.
+\end{theorem}
+
+\begin{proof}
+For independently chosen $x,y\in\{\pm1\}^n$, put
+$u=(x+y)/2$ and $w=(x-y)/2$.  Their supports partition $[n]$ and
+\[
+ x^{\mathsf T}Ax-y^{\mathsf T}Ay=4u^{\mathsf T}Aw.
+\]
+Conversely every signed cut arises from such a pair.  Maximizing $x$ and $y$
+independently gives the identity.
+\end{proof}
+
+\begin{proposition}[fixed-split first moment]\label{prop:first-moment}
+For every $1\le s<n$,
+\[
+ \Cut(A)\ge(n-s)\E|S_s|,
+\]
+where $S_s$ is a sum of $s$ independent Rademacher variables.
+\end{proposition}
+
+\begin{proof}
+Fix $|S|=s$.  For $u\in\{\pm1\}^S$, optimize the signs on $T$ to obtain
+$\|A_{S,T}^{\mathsf T}u\|_1$, then average over $u$.  Each of the $n-s$
+coordinates is distributed as $S_s$.
+\end{proof}
+
+For odd $s=2k+1$,
+\[
+ \E|S_s|=(2k+1)4^{-k}\binom{2k}{k}
+ \ge\sqrt{\frac2\pi}\sqrt{s}.
+\]
+The parity restriction matters: the displayed inequality is false for even
+$s$.  A sharpened Wallis inequality due to Kazarinoff \cite{kazarinoff},
+together with a six-residue finite check, absorbs the rounding loss in choosing
+an odd integer near $n/3$.  This gives the finite theorem
+\begin{equation}\label{eq:first-lower}
+ F(n)\ge \max_{1\le s<n}(n-s)\E|S_s|
+ \ge \frac{2\sqrt2}{3\sqrt{3\pi}}n^{3/2}
+ =0.3071059106\ldots\,n^{3/2}.
+\end{equation}
+The stronger asymptotic bound is Theorem~\ref{thm:window}.
+
+\subsection{Two-orientation squared-Gram rounding}
+
+Put $q=n-1$ and $B=A/\sqrt q$.  Since $B_{ii}=0$ and
+$(B^2)_{ii}=1$, the matrices
+\[
+ X_\sigma=\frac12(I+\sigma B)^2,
+ \qquad \sigma\in\{-1,1\},
+\]
+are positive semidefinite correlation matrices.  Hyperplane-round each
+$X_\sigma$.  For $i\ne j$, write
+$b=B_{ij}$ and $c=(B^2)_{ij}/2$.  The sign-correlation identity yields
+terms involving $\arcsin(c+\sigma b)$.  Averaging the two orientations uses
+\[
+ b\bigl[\arcsin(c+b)-\arcsin(c-b)\bigr]
+ \ge2|b|\arcsin|b|.
+\]
+Indeed, the even density $(1-t^2)^{-1/2}$ has least mass on a fixed-length
+interval when that interval is centered at zero.  Summing the
+$n(n-1)$ identical values $|b|=q^{-1/2}$ proves
+\eqref{eq:squared-gram-bound}.
+
+\subsection{Spectral-edge rounding}
+
+Let
+$\mu(A)=\min\{\lambda_{\max}(A),|\lambda_{\min}(A)|\}$.  Applying
+hyperplane rounding to $I+sA$ and to $I-sA$ at their positive-semidefinite
+spectral endpoints gives
+\begin{equation}\label{eq:spectral-edge}
+ M(A)\ge\frac2\pi n(n-1)\arcsin\!\left(\frac1{\mu(A)}\right).
+\end{equation}
+There is no sign cancellation because
+$A_{ij}\arcsin(sA_{ij})=\arcsin s$.  The bound is exact for $A=J-I$.
+
+\section{Upper bound and conference matrices}
+
+For $q\equiv1\pmod4$ a prime power, the symmetric Paley conference matrix
+$C$ of order $q+1$ satisfies
+\[
+ C^2=qI,
+ \qquad \|C\|_2=\sqrt q,
+ \qquad M(C)\le(q+1)\sqrt q.
+\]
+Primes congruent to $1$ modulo $4$ have relative gaps $o(x)$; the fixed
+modulus statement follows, for example, from Thorner--Zaman
+\cite{thorner-zaman}.  Restricting a nearby Paley matrix to a principal
+$n\times n$ block and applying Lemma~\ref{lem:fill-in} proves the upper half
+of Theorem~\ref{thm:window}.
+
+Conference matrices are spectrally flat, but their Boolean maxima are not
+uniformly close to the hyperplane-rounding value.  An internally audited
+local-field calculation gives the following stronger statement.
+
+\begin{theorem}[conference local improvement]\label{thm:conference-local}
+For every sequence of symmetric conference matrices,
+\[
+ \liminf_n\frac{M(C_n)}{n\sqrt{n-1}}
+ \ge \gamma_{\mathrm{loc}}
+ =0.6894707435\ldots>\frac2\pi.
+\]
+If $A_n$ differs from $C_n$ in $h_n=o(n^{3/2})$ unordered edges, the same
+coefficient holds for $A_n$.
+\end{theorem}
+
+The stability assertion follows from the exact Lipschitz estimate
+\[
+ |M(A)-M(C)|\le4h.
+\]
+For the local improvement, puncture the normalized conference matrix in the
+all-ones direction, hyperplane-round, and use the limiting aligned-local-field
+law
+\[
+ L=\sqrt{\frac2\pi}|G_0|+\sqrt{1-\frac2\pi}\,G_1.
+\]
+Independently flipping a negatively aligned site with probability
+$\min((-L)_+/2,1)$ gives the stated gain.  The traffic input is of the type
+developed in \cite{pesenti}; the conclusion above is nonperturbative at fixed
+algorithmic depth.
+
+There is also a coefficientwise conference free-energy theorem.  If
+$H=Q_C/\sqrt{n-1}$, then for every fixed $r$,
+\[
+ \frac{\kappa_{2r}(H)}n
+ \longrightarrow
+ (-1)^{r-1}\frac{(2r)!}{4r}\operatorname{Cat}_{r-1}.
+\]
+These are the Taylor coefficients of the formal orthogonal-model function
+\[
+ G(\beta)=\frac14\left(
+ \sqrt{1+4\beta^2}-1-
+ \log\frac{1+\sqrt{1+4\beta^2}}2
+ \right).
+\]
+This is \emph{not} a uniform deterministic free-energy comparison: the
+Taylor series has radius $1/2$, while an improvement over
+$\gamma_{\mathrm{loc}}$ would require large $\beta$.  At degree ten the first
+class-sensitive invariant appears, but its normalized fixed-order
+contribution is $O(1/n)$; fixed-order universality survives.
+
+\section{Structure and arithmetic}
+
+\begin{proposition}[block control]\label{prop:block-control}
+For $[n]=S\sqcup T$,
+\[
+ \Cut(A_S)+\Cut(A_T)\le\Cut(A)
+ \le\Cut(A_S)+\Cut(A_T)+\|A_{S,T}\|_{\infty\to1}.
+\]
+\end{proposition}
+
+The lower inequality combines two block optimizers and chooses a simultaneous
+sign flip so that the cross term is nonnegative.  The upper inequality
+decomposes a global optimal signed cut into its internal and cross parts.
+
+Principal restriction and arbitrary one-vertex extension give
+\[
+ F(n)\le F(n+1)\le F(n)+n.
+\]
+Thus $|L_{n+1}-L_n|=O(n^{-1/2})$, and the set of subsequential limits of
+$(L_n)$ is a closed interval.  These facts alone do not imply convergence.
+
+The quadratic form satisfies
+\[
+ x^{\mathsf T}Ax\equiv n(n-1)\pmod4,
+ \qquad
+ F(n)\equiv\binom n2\pmod2.
+\]
+For odd $n$, every rectangular cut sum contains an even number of terms, so
+$\Cut(A)$ is even.
+
+\begin{theorem}[forced unbalancedness]
+If $n\equiv3\pmod4$, then
+\[
+ F(n)>\min_{A\in\Sn}\Cut(A),
+\]
+and no $M$-minimizing matrix is balanced, where balanced means
+$M_+(A)=M_-(A)$.
+\end{theorem}
+
+This explains all computed failures of $F(n)=\min_A\Cut(A)$ at
+$n=3,7,11$ and forces another failure at $n=15$, independently of the
+enumeration.
+
+\section{Exact computation and provenance}\label{sec:computation}
+
+Switching allows the first row and column to be normalized to $+1$ off the
+diagonal.  The public iterator then enumerates
+\[
+ 2^{(n-1)(n-2)/2}
+\]
+labeled switching-normalized matrices.  For each matrix, global-sign symmetry
+reduces the Boolean cube to $2^{n-1}$ vectors.  This direct method reproduces
+orders through $6$ and is intentionally simple.
+
+The historical computations through order $15$ used a more efficient exact
+integer pipeline: Gray-code energy updates, principal-submatrix pruning from
+Lemma~\ref{lem:fill-in}, globally canonical switching/permutation
+certificates, chunked extension levels, and threshold emptiness combined with
+the congruence above.  The order-$15$ value $M=54$ was certified by two
+independent empty searches at thresholds $46$ and $50$, overlapping
+certificate sets, and direct evaluation of the witness
+$[C_{14},\mathbf1]$ on the full antipodal half-cube.
+
+Two implementation failures were discovered and bounded during that work.
+An early 64-bit certificate encoding overflowed once
+$\binom{k-1}{2}>64$; affected levels were recomputed using 128-bit
+certificates.  A fixed-size resume buffer could overflow for sufficiently
+large seed files; every certified run used smaller per-process seeds, and a
+patched resume reproduced the relevant levels.  These incidents are recorded
+because they materially affect how the exhaustive claims should be assessed.
+
+The public repository does not ship the multi-gigabyte intermediate levels.
+Accordingly, values above order $6$ use the status labels
+\path{historical_exhaustive_audit} or
+\path{historical_threshold_emptiness_audit} in
+\texttt{results/reported\_exact\_values.json}.  They should not be mistaken
+for computations reproducible from this compact release alone.
+
+Heuristic search is not a certificate: at order $15$, many annealing restarts
+stalled at $M=58$ although the exact optimum is $54$.
+
+\section{The Hermite residual and the remaining absolute-field problem}
+\label{sec:hermite}
+
+The squared-Gram proof can be decomposed beyond its first Hermite chaos.  Let
+$y_\sigma$ be the rounded sign vector for $X_\sigma$, write
+\[
+ y_\sigma=\sqrt{\frac2\pi}\,z_\sigma+\eta_\sigma,
+ \qquad R_\sigma=\E[\eta_\sigma\eta_\sigma^{\mathsf T}],
+\]
+and couple the two orientations using one Gaussian vector $g$.  The arcsine
+Schur expansion gives, for $n\ge5$,
+\[
+ \frac{R_++R_-}{2}\succeq\frac{1-2/\pi}{2}I.
+\]
+The paired mean local-field square is at least one, with equality only when
+$B^2=I$.
+
+Put
+\[
+ u=\frac{y_++y_-}{2},\qquad v=\frac{y_+-y_-}{2}.
+\]
+Coordinatewise exactly one of $u_i,v_i$ is nonzero:
+\[
+ (u_i,v_i)=
+ \begin{cases}
+ (\sgn g_i,0),&|g_i|>|(Bg)_i|,\\
+ (0,\sgn(Bg)_i),&|(Bg)_i|>|g_i|.
+ \end{cases}
+\]
+Define the complementary absolute field
+\[
+ U_n=\E\sum_i\max\{|(Bu)_i|,|(Bv)_i|\}.
+\]
+The exact remaining target is
+\begin{equation}\label{eq:absolute-field}
+ \liminf_n\frac{U_n}{n}\ge\sqrt{\frac2\pi}.
+\end{equation}
+A self-normalized cube-flip lemma converts
+\eqref{eq:absolute-field} into a universal lower-bound improvement to
+$0.3233368289\ldots$ for $L_n$.  Separate second-moment floors
+$\E\|Bu\|_2^2,\E\|Bv\|_2^2\ge n/2$ do not by themselves imply the required
+first absolute moment.
+
+Although \eqref{eq:absolute-field} is open universally, it is proved in a
+large collection of regimes.  Write $D=B^2$ and
+\[
+ \overline\Delta_n=\frac{1}{n}\sum_{j\ne k}
+ \max\{(n-1)^{-1/2},|D_{jk}|\}^3.
+\]
+The following statements are classified as \statusproved within the
+project's internal audit.
+
+\begin{enumerate}[label=(\roman*)]
+\item If $\overline\Delta_n\to0$, then
+      \eqref{eq:absolute-field} holds.  The same remains true after deleting
+      $o(\sqrt n)$ exceptional source indices when the complementary cubic
+      mass vanishes.
+\item Fixed $k$-fold twin blow-ups of a globally decorrelated base satisfy
+      the stronger coefficient
+      $\sqrt{2/\pi}\sqrt{(k+2)/3}$.  Growing twin fibres are farther from
+      extremality by a direct Boolean lift.
+\item Disjoint strong matched pairs, under block-level global decorrelation,
+      satisfy \eqref{eq:absolute-field}.
+\item Correlation components of maximum size $265$ satisfy
+      \eqref{eq:absolute-field} under block decorrelation.
+\item A component partition is unnecessary: a strong-correlation graph of
+      maximum degree $264$, with weak off-graph cubic mass, suffices.
+\item More generally, with
+      \[
+      \mathcal L(\rho)=\frac2\pi
+      \left(\arcsin\frac\rho2-\frac\rho2\right),
+      \]
+      the maximum-degree condition may be replaced by the oriented-edge
+      density bound
+      \[
+      \frac1n\sum_{(j,k)\in E^{\mathrm{or}}}
+      \frac{|\mathcal L(D_{jk})|}{|D_{jk}|}
+      \le3.9698962518\ldots+o(1).
+      \]
+\end{enumerate}
+
+The number $265$ is a method threshold, not a conjectured phase transition.
+The unresolved regime must retain total cubic defect mass $\Omega(n)$ and a
+dense or heavily overlapping strong-correlation graph after every admissible
+weak-cubic decomposition.  Simple concentrated candidates such as twins,
+matchings, bounded components, and bounded-degree giant components have all
+been eliminated as obstructions.
+
+\section{Barriers and corrected false routes}
+
+The following negative conclusions are part of the research output.  They
+prevent a successor from spending effort on arguments whose quantitative
+ceiling is already understood.
+
+\subsection{Spectral and degree-two certificates}
+
+Every $A\in\Sn$ has $\|A\|_2\ge\sqrt{n-1}$.  Every diagonal $Y$ satisfying
+$-Y\preceq A\preceq Y$ has
+$\operatorname{tr}Y\ge n\sqrt{n-1}$.  For the pair of one-sided semidefinite
+relaxations,
+\[
+ \SDP(A)\SDP(-A)\ge n^2(n-1),
+\]
+so $\max\{\SDP(A),\SDP(-A)\}\ge n\sqrt{n-1}$, with equality in the maximum
+floor exactly for conference matrices.  Thus spectral, diagonal-scaling, and
+degree-two SOS certificates cannot certify the desired constant below the
+spectral ceiling.  The symmetric Grothendieck framework gives the relevant
+norm dictionary \cite{friedland-lim}.
+
+The tempting one-sided claim $\SDP(A)\ge n\sqrt{n-1}$ is false.  For the
+order-$5$ matrix with one positive off-diagonal edge and all other edges
+negative, exact primal and dual certificates give
+\[
+ \SDP(A)=9,
+\]
+not the earlier numerical estimate $9.008$.
+
+\subsection{Composition, nesting, and regularity}
+
+Separate PSD-Gram control of bilinear or Kronecker cross terms loses too much
+to beat the spectral ceiling.  The admissible doubling construction also has
+ratios that increase under iteration.  A generic expression
+$A\otimes B+I\otimes S$ need not even be Seidel: some off-diagonal entries are
+zero.
+
+For a one-vertex extension $[A,a]$,
+\[
+ M([A,a])=max_y\left(|y^{\mathsf T}Ay|+2|a\cdot y|\right).
+\]
+If the maximizers of $A$ are isotropic, every extension costs at least
+$2\sqrt n$ asymptotically, forcing a nested chain to coefficient at least
+$4/3$.  This applies to several prominent conference-derived seeds.
+
+Switching-regularity alone does not imply spectral attainment.  It gives a
+$\{\pm1\}$ eigenvector, but the corresponding eigenvalue need not be
+extremal.  The order-$9$ rook-graph Seidel matrix is regular with exact
+$M=24<27=9\|A\|_2$.
+
+\subsection{Single-split and superadditive methods}
+
+For a rectangular sign matrix, the fractional relaxation of
+$\|B\|_{\infty\to1}$ equals $q\E|S_p|$ exactly.  Bowlin's theorem is the
+classical maximum-frustration form of this statement, including its equality
+and uniqueness structure \cite{bowlin}.  Therefore improvement beyond the
+first moment is a genuine integrality-gap problem, not an averaging or linear
+duality problem.  The rigorous universal ceiling of the single-split route is
+$2/(3\sqrt3)=0.384900\ldots$; the often quoted $0.335$ is only numerical.
+
+Cut superadditivity and the associated free energy do not imply convergence.
+An explicit analytic scalar sequence satisfies the relevant monotonicity,
+increment, window, and superadditivity properties while oscillating.  Fekete
+normalizations fail on exact small values, and bounded-difference
+concentration has speed $n$ where overcoming the number of sign matrices
+requires speed $n^2$.
+
+\subsection{Several splits and Fourier summaries}
+
+The several-splits functional
+\[
+ V(A)=\E_u\max_S
+ \sum_{j\notin S}\left|\sum_{i\in S}A_{ij}u_i\right|
+\]
+lies between the single-split mean and $\Cut(A)$ and is strictly better at
+several computed orders.  It has an exponential $L^2$ packing, but the
+desired growing moments do not follow from low-degree Fourier mass.
+
+Several explicit counterexamples delimit this route:
+\begin{itemize}
+\item for every fixed even swap distance $h$, there are Seidel matrices for
+      which a split-field increment vanishes identically although the field
+      itself is nonconstant;
+\item dense, subset-robust level-two Fourier mass can coexist with constant
+      modulus, so all $L^p$ norms are equal;
+\item positive shifted absolute kernels have a level-four multiplier whose
+      sign changes at the natural shift scale, ruling out a common
+      level-four Gram sign;
+\item low-degree mass, coefficient spread, and restriction robustness alone
+      cannot force $\sqrt p$ moment growth.
+\end{itemize}
+Any successful continuation must use realizability of the actual shifted
+absolute-linear-form process or average rigidity over a proportional packed
+family, not only generic Fourier summaries.
+
+\subsection{Other closed shortcuts}
+
+Graphon convergence is blind because every candidate at the relevant scale
+converges to the zero graphon.  Guerra-style interpolation has no disorder to
+integrate and convexification admits the zero matrix.  Conference local-field
+arithmetic gives exact finite ceilings but no uniform asymptotic gap; the
+compatibility equation $C(Cx)=(n-1)x$ remains essential.  Fixed-order
+conference cumulants agree with the orthogonal model, but that coefficientwise
+fact does not justify a low-temperature comparison.
+
+\section{Related formulations}
+
+For the induced-subset discrepancy $D(n)$,
+\[
+ D(n)\le F(n)\le5D(n).
+\]
+Thus the Erd\H{o}s--Spencer problem has the same order but not the same
+constant \cite{erdos-spencer}.
+
+The coding formulation identifies $F(n)$ with the distance/covering-radius
+problem for first-order Reed--Muller functions restricted to the Hamming
+weight-two slice; general weightwise nonlinearity is discussed by Gini and
+M\'{e}aux \cite{gini-meaux}, but no exact $k=2$ asymptotic constant is known.
+
+For $B\in\{\pm1\}^{p\times q}$,
+\[
+ \min_B\|B\|_{\infty\to1}
+ =pq-2F_{\max}(K_{p,q}),
+\]
+where the right side is maximum frustration of a signed complete bipartite
+graph.  Bowlin gives exact formulas for $p\le7$ \cite{bowlin}; the proportional
+regime remains open.  This is closely related to the Gale--Berlekamp
+switching game \cite{fishburn-sloane,carlson-stolarski,pellegrino-raposo}, but
+that game is bilinear and its constants do not directly transfer to the
+symmetric quadratic problem.
+
+\section{Open problems and continuation map}
+
+\begin{problem}[limit]
+Does $\lim_n L_n$ exist?  If so, what is its value?
+\end{problem}
+
+\begin{problem}[absolute field]
+Prove \eqref{eq:absolute-field} for the remaining dense overlapping
+correlation regime, or construct a counterexample.  A proof would improve the
+universal lower endpoint beyond $1/\pi$.
+\end{problem}
+
+\begin{problem}[infinite sub-spectral family]
+Is there a $\delta>0$ and an infinite sequence $A_n\in\Sn$ such that
+$M(A_n)\le(1-\delta)n^{3/2}$?
+\end{problem}
+
+\begin{problem}[rectangular integrality gap]
+Determine the proportional asymptotic of
+$\min_B\|B\|_{\infty\to1}/(q\sqrt p)$.  The first concrete finite case beyond
+Bowlin's formulas is $p=8$, in particular the $8\times16$ problem.
+\end{problem}
+
+\begin{problem}[order-15 cut]
+Is $\min_{A\in\mathcal S_{15}}\Cut(A)$ equal to $24$ or $26$?  A structural
+argument is preferable to repeating the infeasible threshold-$96$
+enumeration.  A value-$24$ witness would have all fifteen order-$14$
+deletions highly unbalanced.
+\end{problem}
+
+\begin{problem}[Bernoulli lower-tail rate]
+Does
+\[
+ \lim_{n\to\infty}n^{-2}\log_2
+ \#\{A\in\Sn:M(A)\le\lambda n^{3/2}\}
+\]
+exist?  Gaussian or typical-scale universality cannot by itself determine
+this Bernoulli support-endpoint problem.
+\end{problem}
+
+\begin{problem}[growing-order conference comparison]
+Can the fixed-cumulant conference universality be upgraded to a deterministic
+comparison uniform in a growing order or inverse temperature?  Any such
+argument must control the class-sensitive irreducible cores rather than
+discard them termwise.
+\end{problem}
+
+\section{Reproduction guide}
+
+The compact public computation is intentionally modest:
+\begin{verbatim}
+python -m pip install -e .
+python -m unittest discover -s tests -v
+python experiments/exact_small_n.py --max-order 6 \
+  --output results/exact_small_n.json
+\end{verbatim}
+It validates Seidel inputs, evaluates $M(A)$ on the antipodal half-cube,
+enumerates every first-row-normalized labeled switching representative, and
+computes $\min_A M(A)$ exactly through order $6$.
+
+The compact report source and the exact-result JSON are intended to be stable
+handoff points.  Large future computations should publish a certificate
+format, source revision, deterministic regeneration command, hashes, and an
+independent evaluator before publishing a claimed optimum.
+
+\section{Final status}
+
+The limit problem is unresolved.  The strongest universal information is the
+window $[1/\pi,1/2]$, exact values through order $15$, and a sharply narrowed
+description of what a counterexample to the remaining absolute-field target
+must look like.  Conference matrices and their sparse perturbations are not
+extremal obstructions; neither are diffuse correlations, twins, matchings,
+bounded correlation components, or bounded-degree strong-correlation graphs.
+The live problem is concentrated in dense overlapping correlation structure
+or in a new construction principle not captured by the audited barriers.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seidel-quadratic-extrema"
+version = "1.0.0"
+description = "Exact computations for extremal Seidel quadratic forms"
+authors = [{ name = "Marcus Miccelli" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/marcus-miccelli/seidel-quadratic-extrema"
+Report = "https://github.com/marcus-miccelli/seidel-quadratic-extrema/blob/main/paper/report.pdf"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+paataproof = ["py.typed"]

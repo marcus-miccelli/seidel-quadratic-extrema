@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If this research record is useful, please cite the report and repository."
+title: "Extremal Seidel Quadratic Forms on the Boolean Cube"
+type: software
+authors:
+  - family-names: Miccelli
+    given-names: Marcus
+repository-code: "https://github.com/marcus-miccelli/seidel-quadratic-extrema"
+url: "https://github.com/marcus-miccelli/seidel-quadratic-extrema"
+license: MIT
+version: 1.0.0
+date-released: 2026-08-02
+preferred-citation:
+  type: report
+  title: "Extremal Seidel Quadratic Forms on the Boolean Cube: Bounds, Exact Values, Barriers, and Open Problems"
+  authors:
+    - family-names: Miccelli
+      given-names: Marcus
+  year: 2026
+  institution:
+    name: Independent research report

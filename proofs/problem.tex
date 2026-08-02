@@ -1,0 +1,72 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb}
+
+\title{Problem Statement and Normalization Conventions}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+Fix a positive integer $n$.  The set of admissible Seidel matrices of
+order $n$ is
+\[
+  \mathcal{S}_n
+  :=
+  \left\{
+    A=(a_{ij})\in\mathbb{R}^{n\times n}:
+    A^{\mathsf T}=A,\quad
+    a_{ii}=0,\quad
+    a_{ij}\in\{-1,1\}\ \text{for }i\ne j
+  \right\}.
+\]
+The sign cube is
+\[
+  {\{-1,1\}}^{n}
+  =
+  \left\{x={(x_1,\ldots,x_n)}^{\mathsf T}:x_i\in\{-1,1\}\right\}.
+\]
+
+For $A\in\mathcal{S}_n$ and $x\in{\{-1,1\}}^{n}$, define the pair-sum
+quadratic by
+\[
+  Q_A(x):=\sum_{1\le i<j\le n}a_{ij}x_i x_j.
+\]
+Because $A$ is symmetric and has zero diagonal, the full quadratic form is
+\[
+  x^{\mathsf T}Ax
+  =\sum_{i=1}^n\sum_{j=1}^n a_{ij}x_i x_j
+  =2\sum_{1\le i<j\le n}a_{ij}x_i x_j
+  =2Q_A(x),
+\]
+or, equivalently, $Q_A(x)=\tfrac12 x^{\mathsf T}Ax$.
+
+For a fixed admissible matrix, set
+\[
+  M(A):=\max_{x\in{\{-1,1\}}^{n}}\left|x^{\mathsf T}Ax\right|.
+\]
+Thus the two quadratic normalizations satisfy
+\[
+  M(A)
+  =2\max_{x\in{\{-1,1\}}^{n}}|Q_A(x)|.
+\]
+The extremal quantity is
+\[
+  F(n)
+  :=\min_{A\in\mathcal{S}_n}
+       \max_{x\in{\{-1,1\}}^{n}}|Q_A(x)|
+  =\frac12\min_{A\in\mathcal{S}_n}M(A),
+\]
+and its normalized form is
+\[
+  L_n:=\frac{F(n)}{n^{3/2}}.
+\]
+
+The open question is: does the limit
+\[
+  \lim_{n\to\infty}L_n
+\]
+exist, and if it exists, what is its value?
+
+\end{document}
