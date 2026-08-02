@@ -28,7 +28,7 @@ The lower constant is $2\phi(t_*)\bigl(2\Phi(t_*)-1\bigr)$. The earlier $1/\pi$ 
 - `paper/report.pdf` — a compiled copy of the report.
 - `src/paataproof/` — validated Seidel matrices and exact small-order routines.
 - `experiments/exact_small_n.py` — deterministic exact-result generator.
-- `experiments/composition_small_orders.py` — exact scalar-defect and selected two-block bridge audit.
+- `experiments/composition_small_orders.py` — exact scalar-defect, bridge, and quotient-shell audit.
 - `results/exact_small_n.json` — results reproduced by the public code.
 - `results/composition_small_orders.json` — compact composition-audit output.
 - `results/reported_exact_values.json` — larger historical results with explicit evidence labels.
@@ -67,11 +67,12 @@ External research code is not vendored into this compact repository. The pinned 
 
 1. Decide whether $L_n$ converges.
 2. Prove a uniform power-saving composition bound for comparable blocks, $1/2\le m/n\le2$. The report proves that this restricted case alone would make $H(n)/n$ converge.
-3. Resolve the adaptive Gibbs-bridge/noisy-code obstruction identified in the continuation map.
-4. Construct an infinite family uniformly below the spectral ceiling.
-5. Replace the remaining historical finite-order audits with compact standalone proof certificates.
-6. Determine the proportional rectangular integrality gap, beginning at the unresolved $8\times16$ case.
-7. Decide whether the order-15 minimum cut discrepancy is 24 or 26 without repeating the infeasible enumeration.
+3. Find an explicit sublinear-dimensional quotient whose stratified shells certify the recurrence-scale gain on comparable blocks.
+4. Resolve the adaptive Gibbs-bridge/noisy-code obstruction identified in the continuation map.
+5. Construct an infinite family uniformly below the spectral ceiling.
+6. Replace the remaining historical finite-order audits with compact standalone proof certificates.
+7. Determine the proportional rectangular integrality gap, beginning at the unresolved $8\times16$ case.
+8. Decide whether the order-15 minimum cut discrepancy is 24 or 26 without repeating the infeasible enumeration.
 
 Contributions should follow [CONTRIBUTING.md](CONTRIBUTING.md), especially its requirements for claim status and computational provenance.
 

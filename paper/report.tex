@@ -76,7 +76,10 @@ barriers that rule out several natural spectral, compositional,
 superadditive, and low-degree Fourier approaches.  For composition, it is
 enough to prove a power-saving defect on comparable block sizes; explicit
 rectangular estimates already give sublinear defects when one block is
-$o(n)$ and power savings when it is polynomially smaller.
+$o(n)$ and power savings when it is polynomially smaller.  A
+quotient-stratified shell theorem interpolates exactly between marginal
+histograms and exhaustive bridge response, with a multiplicity bound showing
+when such compression is impossible.
 \end{abstract}
 
 \noindent\fbox{\parbox{0.95\textwidth}{%
@@ -679,6 +682,162 @@ limsup of $b_n/n$.  Finally let $k\to\infty$ along a subsequence attaining
 the liminf.  The limsup and liminf coincide.
 \end{proof}
 
+\subsection{Quotient-stratified shell switching}
+
+The exact block identity admits a hierarchy between unstratified energy
+histograms and the full switching response.  Let
+\[
+ \mathcal X_r=\{\pm1\}^r/\{\pm\mathbf1\},
+ \qquad G=\mathcal X_m\times\mathcal X_n,
+ \qquad |G|=2^{m+n-2},
+\]
+written additively, although its operation is coordinatewise multiplication.
+Fix $A,B,\sigma,W$ as above and let $L=\|W\|_{\infty\to1}$.  For
+$t=(x,y)\in G$, define
+\[
+ \eta(t)=f(A)+f(B)-|Q_A(x)+\sigma Q_B(y)|,
+ \qquad
+ \zeta(t)=L-|x^{\mathsf T}Wy|.
+\]
+If $s=(p,q)$ switches the rows and columns of $W$, then
+\begin{equation}\label{eq:switching-gain}
+ f(P_{\sigma,W^s})=f(A)+f(B)+L-\Gamma(s),
+ \qquad
+ \Gamma(s)=\min_{t\in G}\{\eta(t)+\zeta(s+t)\}.
+\end{equation}
+
+Let $\pi:G\to Q$ be a quotient homomorphism and put $K=\ker\pi$.  Retain
+only the shell counts stratified by quotient class:
+\[
+ N_\eta(e,a)=\#\{t:\eta(t)=e,\ \pi(t)=a\},
+ \qquad
+ N_\zeta(z,a)=\#\{t:\zeta(t)=z,\ \pi(t)=a\}.
+\]
+
+\begin{theorem}[quotient-shell switching]\label{thm:quotient-shell}
+If an integer $g\ge0$ and a class $c\in Q$ satisfy
+\begin{equation}\label{eq:quotient-shell}
+ \sum_{e+z<g}\ \sum_{a\in Q}
+ N_\eta(e,a)N_\zeta(z,c+a)<|K|,
+\end{equation}
+then some switching $s$ with $\pi(s)=c$ has $\Gamma(s)\ge g$.  Hence
+\[
+ f(P_{\sigma,W^s})\le f(A)+f(B)+L-g.
+\]
+The trivial quotient is the ordinary histogram first-moment criterion; the
+identity quotient is exhaustive switching.
+\end{theorem}
+
+\begin{proof}
+For a switching $s$, let
+\[
+ V_g(s)=\#\{t\in G:\eta(t)+\zeta(s+t)<g\}.
+\]
+Average $V_g(s)$ over the coset $\pi(s)=c$.  For fixed $t$ in class $a$,
+the translate $s+t$ is uniform on the class $c+a$.  The average is therefore
+the left side of \eqref{eq:quotient-shell} divided by $|K|$.  If it is less
+than one, some integer-valued $V_g(s)$ is zero, which is equivalent to
+$\Gamma(s)\ge g$.
+\end{proof}
+
+For a one-bit quotient with nontrivial character $\chi$, put
+\[
+ T_g=\sum_{s\in G}V_g(s),
+ \qquad \widehat V_g(\chi)=\sum_{s\in G}\chi(s)V_g(s).
+\]
+The two coset sums are
+$(T_g\pm\widehat V_g(\chi))/2$.  Thus the readily checked condition
+\begin{equation}\label{eq:one-character}
+ T_g-|\widehat V_g(\chi)|<|G|
+\end{equation}
+certifies gain $g$.  This is the first genuinely state-sensitive level of
+the hierarchy: the unstratified test retains only $T_g$.  It does not require
+the full violation table.  If $f_e=\mathbf1_{\{\eta=e\}}$ and
+$h_z=\mathbf1_{\{\zeta=z\}}$, the unnormalized Fourier transform gives the
+exact factorization
+\[
+ \widehat V_g(\chi)=
+ \sum_{e+z<g}\widehat f_e(\chi)\widehat h_z(\chi).
+\]
+Thus one Fourier coefficient from each shell suffices for
+\eqref{eq:one-character}.
+
+There is a still coarser two-replica sufficient condition.  Put
+$U_g=\sum_sV_g(s)^2$ and $S=|G|$.  Parseval gives
+\[
+ \sum_{\chi\ne1}|\widehat V_g(\chi)|^2=SU_g-T_g^2.
+\]
+Consequently, when $T_g\ge S$, the inequality
+\begin{equation}\label{eq:two-replica-quotient}
+ SU_g-T_g^2>(S-1)(T_g-S)^2
+\end{equation}
+forces a nontrivial character satisfying \eqref{eq:one-character}.  The
+quantity $U_g$ counts pairs of child states that violate the target under the
+same switching, so \eqref{eq:two-replica-quotient} replaces all stratified
+shells by one exact overlap statistic.
+
+The hierarchy also has a sharp multiplicity obstruction.
+
+\begin{proposition}[isolated-gain obstruction]\label{prop:quotient-obstruction}
+Let
+$Z_g=\#\{s:V_g(s)=0\}$ and suppose every positive $V_g(s)$ is at least
+$v\ge2$.  If a quotient of dimension $k$ certifies gain $g$, then, with
+$d=\log_2|G|=m+n-2$,
+\begin{equation}\label{eq:quotient-dimension-lower}
+ 2^{d-k}<\frac{vZ_g}{v-1}.
+\end{equation}
+In particular, if $Z_g=2^{o(d)}$, every quotient-shell certificate for this
+gain has dimension $d-o(d)$.
+\end{proposition}
+
+\begin{proof}
+A certifying quotient coset has size $h=2^{d-k}$ and total violation count
+less than $h$.  If it contains $z\le Z_g$ zeroes, its other entries contribute
+at least $v(h-z)$.  Hence
+$v(h-z)<h$, so $(v-1)h<vz\le vZ_g$.
+\end{proof}
+
+This identifies a concrete continuation target.  A quotient of dimension
+$k=o(m+n)$ has only $2^{o(m+n)}$ stratified classes, so it remains strictly
+smaller than the full response table.  For exact minimizers $A,B$, set
+\[
+ T=\bigl(H(m)+H(n)+C(m+n)^{1-\delta}\bigr)^{3/2},
+ \qquad
+ g=\max\left\{0,\left\lceil F(m)+F(n)+L-T\right\rceil\right\}.
+\]
+If an explicit sublinear-dimensional quotient satisfies
+\eqref{eq:quotient-shell} for this $g$ on every sufficiently large comparable
+split, then \eqref{eq:switching-gain} gives the hypothesis of
+Theorem~\ref{thm:comparable-splits}, and $L_n$ converges.  Proposition
+\ref{prop:quotient-obstruction} says that this route should target a
+recurrence-scale gain supported by many switchings, rather than isolated
+exact parent optima.
+
+The public finite audit uses four fixed optimal-child bridge orbits.  The
+columns give the gain certified by the unstratified histogram, by the best
+single character, and by exhaustive switching.  The final three columns
+refer to the exhaustive target: its number $Z$ of successful switchings, the
+minimum positive violation count $v$, and the resulting lower bound on
+quotient dimension.
+\begin{center}
+\begin{tabular}{c|rrrrrrr}
+\toprule
+split & $d$ & histogram & one character & exact & $Z$ & $v$ & $k_{\min}$\\
+\midrule
+$3+3$ &4&2&4&6&1&4&4\\
+$3+4$ &5&4&6&6&8&1&0\\
+$3+5$ &6&2&4&6&1&2&6\\
+$4+4$ &6&4&6&8&1&2&6\\
+\bottomrule
+\end{tabular}
+\end{center}
+Thus one character improves the certified gain in every displayed case and
+recovers the exact fixed-orbit cap at $3+4$.  At the other three exact
+targets, the counting obstruction forces the full quotient dimension.  This
+is finite evidence about the hierarchy, not an asymptotic shell theorem.  The
+two-replica condition \eqref{eq:two-replica-quotient} already certifies the
+displayed one-character gain at $3+3$ and $4+4$, but not at $3+4$ or $3+5$.
+
 The compact finite audit emphasizes why a positive defect is unavoidable.
 Literal subadditivity of $H$ fails already at $2+2$:
 $H(4)-2H(2)=4^{2/3}-2=0.519842\ldots$.  With both children of order at
@@ -1028,7 +1187,11 @@ composition campaigns identify the same target and reduce one
 finite-temperature version to controlling a least-likely-output path in a
 noisy rank-one code \cite{beaumont-ledger}.  The unresolved obstacle is
 optimizer-sensitive: the internal block energies and the bridge field are
-evaluated on the same spin assignment.
+evaluated on the same spin assignment.  Theorem~\ref{thm:quotient-shell}
+gives a second precise route: find an explicit quotient of dimension
+$o(m+n)$ whose stratified extreme shells certify the recurrence-scale gain.
+The multiplicity obstruction shows why isolated exact-optimum switchings are
+the wrong target for that route.
 \end{problem}
 
 \begin{problem}[absolute field]
@@ -1089,7 +1252,9 @@ It validates Seidel inputs, evaluates $M(A)$ on the antipodal half-cube,
 enumerates every first-row-normalized labeled switching representative,
 computes $\min_A M(A)$ exactly through order $6$, audits all scalar
 composition defects through total order $15$, and exhausts the bridges for
-four selected fixed-child cases.
+four selected fixed-child cases.  On four explicit bridge witnesses it also
+computes every switching violation count, the unstratified and best
+one-character gains, and the quotient-dimension counting obstruction.
 
 The file \texttt{results/external\_verification.json} records the two pinned
 external revisions used in the 2026-08-02 audit, SHA-256 hashes of the relevant
@@ -1112,8 +1277,10 @@ type.  Independent public computations now reproduce order $11$ and
 corroborate orders $12$ through $14$; the order-$15$ optimum still rests on
 the historical threshold audit.  For convergence, the cleanest live target
 is now a power-saving composition bound only for comparable blocks; the
-localization theorem proves that no all-splits estimate is needed.  No
-candidate pair of separated infinite
+localization theorem proves that no all-splits estimate is needed.  The
+quotient-shell hierarchy now supplies an exact intermediate state between
+unstratified histograms and the full bridge response, while its multiplicity
+bound rules out compression of isolated gains.  No candidate pair of separated infinite
 subsequences is known.
 
 \bibliographystyle{plain}

@@ -83,6 +83,33 @@ class ExactBridgeTests(unittest.TestCase):
                     )
                     self.assertEqual(direct, separated)
 
+    def test_quotient_shell_hierarchy_and_counting_obstruction(self) -> None:
+        child = composition.signing(3, (-1,))
+        record = composition.quotient_shell_record(child, child, 1, -1)
+
+        self.assertEqual(record["histogram_gain"], 2)
+        self.assertEqual(record["one_character_gain"], 4)
+        self.assertTrue(record["one_character_second_moment_certifies"])
+        self.assertEqual(record["exact_gain"], 6)
+        self.assertEqual(record["exact_parent_cap"], 5)
+        self.assertEqual(record["exact_target_zero_switching_count"], 1)
+        self.assertEqual(
+            record["exact_target_minimum_positive_violation_count"], 4
+        )
+        self.assertEqual(
+            record["exact_target_quotient_dimension_lower_bound"], 4
+        )
+
+    def test_one_character_can_certify_the_exact_three_plus_four_cap(self) -> None:
+        left = composition.signing(3, (-1,))
+        right = composition.signing(4, (-1, -1, 1))
+        record = composition.quotient_shell_record(left, right, 3, 1)
+
+        self.assertEqual(record["histogram_parent_cap"], 11)
+        self.assertEqual(record["one_character_parent_cap"], 9)
+        self.assertFalse(record["one_character_second_moment_certifies"])
+        self.assertEqual(record["exact_parent_cap"], 9)
+
 
 if __name__ == "__main__":
     unittest.main()
