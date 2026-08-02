@@ -36,7 +36,7 @@
 \title{\textbf{Extremal Seidel Quadratic Forms on the Boolean Cube}\\
 \large Bounds, Exact Values, Barriers, and Open Problems}
 \author{Marcus Miccelli}
-\date{2 August 2026}
+\date{3 August 2026}
 
 \hypersetup{
   pdftitle={Extremal Seidel Quadratic Forms on the Boolean Cube},
@@ -73,7 +73,10 @@ maps the remaining absolute-field problem: it is proved in several diffuse,
 bounded-component, bounded-degree, and twin-fibre regimes, while a genuinely
 dense overlapping-correlation regime remains.  The report also records
 barriers that rule out several natural spectral, compositional,
-superadditive, and low-degree Fourier approaches.
+superadditive, and low-degree Fourier approaches.  For composition, it is
+enough to prove a power-saving defect on comparable block sizes; explicit
+rectangular estimates already give sublinear defects when one block is
+$o(n)$ and power savings when it is polynomially smaller.
 \end{abstract}
 
 \noindent\fbox{\parbox{0.95\textwidth}{%
@@ -534,7 +537,164 @@ Principal restriction and arbitrary one-vertex extension give
  F(n)\le F(n+1)\le F(n)+n.
 \]
 Thus $|L_{n+1}-L_n|=O(n^{-1/2})$, and the set of subsequential limits of
-$(L_n)$ is a closed interval.  These facts alone do not imply convergence.
+$(L_n)$ is a closed interval.  In particular, $H(n)=F(n)^{2/3}$ is
+nondecreasing.  These facts alone do not imply convergence.
+
+\subsection{Two-block composition and localization}
+
+For $A\in\mathcal S_m$, write
+\[
+ f(A)=\max_x|Q_A(x)|,\qquad
+ p(A)=\max_xQ_A(x),\qquad r(A)=-\min_xQ_A(x),
+\]
+and put $\Delta(A)=|p(A)-r(A)|$, so that
+$f(A)=\max\{p(A),r(A)\}$.  Given $B\in\mathcal S_n$,
+$W\in\{\pm1\}^{m\times n}$, and $\sigma\in\{\pm1\}$, form
+\[
+ P_{\sigma,W}=\begin{pmatrix}A&W\\W^{\mathsf T}&\sigma B\end{pmatrix}.
+\]
+The two configurations $(x,y)$ and $(x,-y)$ give opposite bridge fields.
+Consequently the following identity is exact:
+\begin{equation}\label{eq:exact-block-cap}
+ f(P_{\sigma,W})=
+ \max_{x,y}\bigl(
+ |Q_A(x)+\sigma Q_B(y)|+|x^{\mathsf T}Wy|
+ \bigr).
+\end{equation}
+Indeed, this is just
+$\max\{|h+b|,|h-b|\}=|h|+|b|$ for each projective pair of
+states.  In the bridge-free internal problem, choosing the relative
+orientation gives the further exact formula
+\begin{equation}\label{eq:orientation-saving}
+ \min_{\sigma=\pm1}\max_{x,y}|Q_A(x)+\sigma Q_B(y)|
+ =f(A)+f(B)-\min\{\Delta(A),\Delta(B)\}.
+\end{equation}
+For $\sigma=1$ the left-hand cap before minimization is
+$\max\{p(A)+p(B),r(A)+r(B)\}$; for $\sigma=-1$ it is
+$\max\{p(A)+r(B),r(A)+p(B)\}$.  Comparing these four sums proves
+\eqref{eq:orientation-saving}, including tied extrema.
+This saving concerns the internal direct sum only; adding a bridge still
+requires control of the correlated maximum in \eqref{eq:exact-block-cap}.
+
+Put
+\[
+ R(m,n)=\min_{W\in\{\pm1\}^{m\times n}}
+ \|W\|_{\infty\to1},
+ \qquad \mu_s=\E|\varepsilon_1+\cdots+\varepsilon_s|,
+\]
+where the $\varepsilon_i$ are independent uniform signs.
+
+\begin{theorem}[rectangular bridge bounds]\label{thm:rectangular-bridge}
+For all $m,n\ge2$,
+\begin{align*}
+ \max\{m\mu_n,n\mu_m\}\le R(m,n)
+ \le\min\bigl\{&\sqrt{2(\log2)mn(m+n-1)},\\
+ &m\mu_n+\sqrt{2mn(n-1)\log2},\\
+ &n\mu_m+\sqrt{2mn(m-1)\log2}\bigr\}.
+\end{align*}
+In particular, if $n=o(m)$, then
+\[
+ R(m,n)=m\mu_n\bigl(1+O(\sqrt{n/m})\bigr).
+\]
+\end{theorem}
+
+\begin{proof}
+For fixed $W$,
+$\|W\|_{\infty\to1}=\max_y\sum_i|(Wy)_i|$.  Averaging over
+$y$ gives the lower bound $m\mu_n$; transposition gives $n\mu_m$.
+
+For the first upper bound, take $W$ uniformly at random.  For each rank-one
+sign pattern $(x_i y_j)_{ij}$, Hoeffding's inequality bounds the upper tail of
+$x^{\mathsf T}Wy$.  There are $2^{m+n-1}$ distinct patterns, so a union bound
+gives the first displayed estimate.  For the asymmetric estimate, fix $y$
+and put $Z_y=\sum_i|(Wy)_i|$.  It has mean $m\mu_n$, and changing one entry
+of $W$ changes $Z_y$ by at most $2$.  McDiarmid's inequality, followed by a
+union bound over the $2^{n-1}$ projective choices of $y$, gives the second
+upper bound; transposition gives the third.  At an equality threshold one
+applies the argument with an arbitrarily small positive increment and then
+uses finiteness.  Finally, the Khintchine lower bound
+$\mu_n\gg\sqrt n$ compares the asymmetric error to $m\mu_n$.
+\end{proof}
+
+\begin{corollary}[unbalanced composition]\label{cor:unbalanced-composition}
+Let $H(n)=F(n)^{2/3}$ and $N=m+n$, where $m\ge n\ge2$.  Then
+\begin{equation}\label{eq:unbalanced-composition}
+ H(N)\le H(m)+H(n)+1.291\sqrt{nN}.
+\end{equation}
+Thus, for every fixed $\varepsilon>0$, the condition
+$n\le N^{1-\varepsilon}$ gives an $O(N^{1-\varepsilon/2})$ defect; merely
+$n=o(N)$ gives an $o(N)$ defect.
+\end{corollary}
+
+\begin{proof}
+Choosing optimal children and a bridge attaining $R(m,n)$ in
+\eqref{eq:exact-block-cap} gives
+$F(N)\le F(m)+F(n)+R(m,n)$.  Concavity, subadditivity of the
+$2/3$ power, and $F(m)\ge m\sqrt{m-1}/\pi$ from
+\eqref{eq:squared-gram-bound} yield
+\[
+ H(N)\le H(m)+H(n)
+ +\frac23\pi^{1/3}\sqrt{2\log2}
+ \left(\frac m{m-1}\right)^{1/6}\sqrt{n(N-1)}.
+\]
+The coefficient is at most
+$(2/3)\pi^{1/3}\sqrt{2\log2}\,2^{1/6}
+=1.2904012036\ldots<1.291$.
+\end{proof}
+
+The all-splits formulation of power-saving composition is stronger than
+needed.  The following localization is the main structural gain.
+
+\begin{theorem}[comparable-split localization]\label{thm:comparable-splits}
+Let $(b_n)$ be a nonnegative nondecreasing sequence.  Suppose there are fixed
+$C<\infty$, $\delta>0$, and $n_0$ such that
+\[
+ b_{r+s}\le b_r+b_s+C(r+s)^{1-\delta}
+\]
+whenever $r,s\ge n_0$ and $1/2\le r/s\le2$.  Then $b_n/n$ converges.
+Consequently, this hypothesis only for comparable splits of
+$b_n=H(n)=F(n)^{2/3}$ would prove convergence of $L_n$.
+\end{theorem}
+
+\begin{proof}
+Fix $k\ge n_0$ and construct a block of size $qk$ from $q$ leaves of size
+$k$, recursively splitting each leaf count into its floor and ceiling halves.
+Every merge is between comparable children.  An internal node with $\ell$
+descendant leaves contributes at most $C(\ell k)^{1-\delta}$.  Charge this
+equally to those leaves.  Along any leaf-to-root path, the first internal size
+is at least $2$ and subsequent sizes grow by a factor at least $3/2$.
+Therefore each leaf receives at most
+\[
+ Ck^{1-\delta}K_\delta,
+ \qquad
+ K_\delta=\frac{2^{-\delta}}{1-(2/3)^\delta}.
+\]
+Summing over the leaves gives
+\[
+ \frac{b_{qk}}{qk}\le\frac{b_k}{k}+CK_\delta k^{-\delta}.
+\]
+For arbitrary $n$, take $q=\lceil n/k\rceil$ and use monotonicity
+$b_n\le b_{qk}$.  Letting $n\to\infty$ gives the same upper bound for the
+limsup of $b_n/n$.  Finally let $k\to\infty$ along a subsequence attaining
+the liminf.  The limsup and liminf coincide.
+\end{proof}
+
+The compact finite audit emphasizes why a positive defect is unavoidable.
+Literal subadditivity of $H$ fails already at $2+2$:
+$H(4)-2H(2)=4^{2/3}-2=0.519842\ldots$.  With both children of order at
+least $3$, it first fails at $3+5$ by
+\[
+ 10^{2/3}-3^{2/3}-4^{2/3}=0.0416629\ldots>0.
+\]
+Among the $42$ pairs with $2\le m\le n$ and $m+n\le15$, using the
+evidence-labelled exact-value table, $21$ have positive defect, including
+$15$ of the $24$ comparable pairs.  The largest is
+$H(11)-H(5)-H(6)=1.167629\ldots$.  Exhaustive bridge enumeration for four
+fixed pairs of optimal children also finds orientation sensitivity at
+$3+3$: the two relative orientations have exact optimized caps $7$ and $5$.
+These are finite checks, not evidence for an asymptotic exponent; the keys,
+integer sign certificates, and all $2^{mn-1}$ bridge searches are reproduced
+by \texttt{experiments/composition\_small\_orders.py}.
 
 The quadratic form satisfies
 \[
@@ -854,13 +1014,16 @@ Does $\lim_n L_n$ exist?  If so, what is its value?
 \end{problem}
 
 \begin{problem}[power-saving composition]\label{prob:composition}
-Put $H(n)=F(n)^{2/3}$.  Prove that, for some $\delta>0$ and all $m,n$,
+Put $H(n)=F(n)^{2/3}$.  Prove that there are fixed
+$C<\infty$, $\delta>0$, and $n_0$ such that
 \[
- H(m+n)\le H(m)+H(n)+O\bigl((m+n)^{1-\delta}\bigr),
+ H(m+n)\le H(m)+H(n)+C(m+n)^{1-\delta}
 \]
-or establish an equivalent recurrence whose normalized errors are summable
-on geometric scales.  The standard almost-subadditive lemma would then make
-$H(n)/n$ converge, and hence make $L_n=(H(n)/n)^{3/2}$ converge.  External
+whenever $m,n\ge n_0$ and $1/2\le m/n\le2$.  Theorem~\ref{thm:comparable-splits}
+shows that comparable splits alone make $H(n)/n$ converge, and hence make
+$L_n=(H(n)/n)^{3/2}$ converge.  Corollary~\ref{cor:unbalanced-composition}
+already supplies a power saving when the smaller block is polynomially
+smaller, but it gives only an order-$m+n$ error on comparable blocks.  External
 composition campaigns identify the same target and reduce one
 finite-temperature version to controlling a least-likely-output path in a
 noisy rank-one code \cite{beaumont-ledger}.  The unresolved obstacle is
@@ -919,10 +1082,14 @@ python -m pip install -e .
 python -m unittest discover -s tests -v
 python experiments/exact_small_n.py --max-order 6 \
   --output results/exact_small_n.json
+python experiments/composition_small_orders.py \
+  --output results/composition_small_orders.json
 \end{verbatim}
 It validates Seidel inputs, evaluates $M(A)$ on the antipodal half-cube,
-enumerates every first-row-normalized labeled switching representative, and
-computes $\min_A M(A)$ exactly through order $6$.
+enumerates every first-row-normalized labeled switching representative,
+computes $\min_A M(A)$ exactly through order $6$, audits all scalar
+composition defects through total order $15$, and exhausts the bridges for
+four selected fixed-child cases.
 
 The file \texttt{results/external\_verification.json} records the two pinned
 external revisions used in the 2026-08-02 audit, SHA-256 hashes of the relevant
@@ -944,8 +1111,9 @@ squared-Gram result remains the stronger explicit finite statement of its
 type.  Independent public computations now reproduce order $11$ and
 corroborate orders $12$ through $14$; the order-$15$ optimum still rests on
 the historical threshold audit.  For convergence, the cleanest live target
-is power-saving composition for $F(n)^{2/3}$ or an equivalent summable
-finite-temperature recurrence.  No candidate pair of separated infinite
+is now a power-saving composition bound only for comparable blocks; the
+localization theorem proves that no all-splits estimate is needed.  No
+candidate pair of separated infinite
 subsequences is known.
 
 \bibliographystyle{plain}
