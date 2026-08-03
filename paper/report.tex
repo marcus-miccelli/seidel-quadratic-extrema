@@ -79,7 +79,9 @@ rectangular estimates already give sublinear defects when one block is
 $o(n)$ and power savings when it is polynomially smaller.  A
 quotient-stratified shell theorem interpolates exactly between marginal
 histograms and exhaustive bridge response, with a multiplicity bound showing
-when such compression is impossible.
+when such compression is impossible.  Its global two-replica test is an
+addition-fiber collision inequality with sharp occupancy bounds, exposing
+both a symmetry reduction and a Fourier-dilution obstruction.
 \end{abstract}
 
 \noindent\fbox{\parbox{0.95\textwidth}{%
@@ -762,7 +764,13 @@ exact factorization
 Thus one Fourier coefficient from each shell suffices for
 \eqref{eq:one-character}.
 
-There is a still coarser two-replica sufficient condition.  Put
+There is a still coarser two-replica sufficient condition.  Define the
+bad-pair set and its addition map by
+\[
+ \mathcal B_g=\{(t,u)\in G^2:\eta(t)+\zeta(u)<g\},
+ \qquad \varphi(t,u)=t+u.
+\]
+Then $V_g(s)=\#\varphi^{-1}(s)$ and $T_g=|\mathcal B_g|$.  Put
 $U_g=\sum_sV_g(s)^2$ and $S=|G|$.  Parseval gives
 \[
  \sum_{\chi\ne1}|\widehat V_g(\chi)|^2=SU_g-T_g^2.
@@ -771,10 +779,113 @@ Consequently, when $T_g\ge S$, the inequality
 \begin{equation}\label{eq:two-replica-quotient}
  SU_g-T_g^2>(S-1)(T_g-S)^2
 \end{equation}
-forces a nontrivial character satisfying \eqref{eq:one-character}.  The
-quantity $U_g$ counts pairs of child states that violate the target under the
-same switching, so \eqref{eq:two-replica-quotient} replaces all stratified
-shells by one exact overlap statistic.
+forces a nontrivial character satisfying \eqref{eq:one-character}.
+
+The statistic has an exact overlap factorization.  For $r\in G$, let
+\[
+ A_r(e,e')=\#\{t:\eta(t)=e,\ \eta(t+r)=e'\},
+ \qquad
+ C_r(z,z')=\#\{u:\zeta(u)=z,\ \zeta(u+r)=z'\}.
+\]
+
+\begin{proposition}[two-replica overlap factorization]
+\label{prop:two-replica-factorization}
+One has
+\begin{equation}\label{eq:two-replica-factorization}
+ U_g=\sum_{r\in G}\ \sum_{\substack{e+z<g\\e'+z'<g}}
+ A_r(e,e')C_r(z,z').
+\end{equation}
+The $r=0$ contribution is $T_g$; the other terms count ordered collisions
+of distinct bad pairs under $\varphi$.
+\end{proposition}
+
+\begin{proof}
+Expand $U_g$ as the number of ordered pairs
+$((t,u),(t',u'))\in\mathcal B_g^2$ with $t+u=t'+u'$.  In the elementary
+two-group $G$, this equality is equivalent to
+$t+t'=u+u'=r$.  Fixing $r$ separates the choices of $t$ and $u$, giving
+\eqref{eq:two-replica-factorization}.
+\end{proof}
+
+There is also a useful integer normal form.  Let $P_g$ be the number of
+unordered pairs of distinct elements of $\mathcal B_g$ in a common fiber of
+$\varphi$.
+
+\begin{corollary}[collision normal form]\label{cor:collision-normal-form}
+Suppose $T_g=S+q$ with $q\ge0$.  Then
+\[
+ U_g=T_g+2P_g,
+ \qquad
+ P_g=\sum_s\binom{V_g(s)}2,
+\]
+and \eqref{eq:two-replica-quotient} is equivalent to either of the exact
+conditions
+\begin{equation}\label{eq:collision-normal-form}
+ P_g>\binom{q+1}{2},
+ \qquad
+ \sum_s(V_g(s)-1)^2>q^2.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Each fiber contributes its diagonal pairs and twice its unordered distinct
+pairs, so $U_g=T_g+2P_g$.  Substitution of $T_g=S+q$ into
+\eqref{eq:two-replica-quotient} cancels $S$ and gives
+$2P_g>q(q+1)$.  The centered form follows from
+$\sum_s(V_g(s)-1)^2=2P_g-q$.
+\end{proof}
+
+Thus the global two-replica test asks whether collisions beat the precise
+cost of the $q$ bad pairs beyond one per switching.  Sharp bounds are already
+available from the occupancy profile.  Put
+$Z_g=\#\{s:V_g(s)=0\}$, $K=S-Z_g$, and $M=\max_sV_g(s)$.  Write
+\[
+ T_g=\alpha K+\rho,
+ \quad 0\le\rho<K,
+ \qquad
+ E:=T_g-K.
+\]
+Define
+\[
+ P_{\min}=K\binom{\alpha}{2}+\rho\alpha.
+\]
+If $M=1$, put $P_{\max}=0$; otherwise write
+$E=\beta(M-1)+\tau$, $0\le\tau<M-1$, and put
+\[
+ P_{\max}=\beta\binom{M}{2}+\binom{\tau+1}{2}.
+\]
+
+\begin{proposition}[sharp occupancy bounds]\label{prop:two-replica-occupancy}
+For every nonnegative integer fiber profile with the stated
+$T_g,Z_g,M$,
+\[
+ P_{\min}\le P_g\le P_{\max}.
+\]
+The lower bound is best possible from $T_g,Z_g$ alone, and the upper bound is
+best possible after also imposing the cap $M$.  Consequently,
+$P_{\min}>\binom{q+1}{2}$ certifies
+\eqref{eq:two-replica-quotient}, whereas
+$P_{\max}\le\binom{q+1}{2}$ rules it out.
+\end{proposition}
+
+\begin{proof}
+Among the $K$ positive fibers with fixed sum, convexity of
+$v\mapsto\binom v2$ makes the collision count smallest when the sizes differ
+by at most one, giving $P_{\min}$.  After placing one bad pair in each
+positive fiber, the remaining $E$ entries lie in boxes of capacity $M-1$.
+Convexity makes the collision count largest by filling boxes to capacity and
+then one final box, giving $P_{\max}$.  The balanced and concentrated profiles
+attain the respective bounds.
+\end{proof}
+
+Symmetry can compress the exact overlap sum.  If
+$\mathcal G\le\operatorname{Aut}(G)$ preserves both $\eta$ and $\zeta$, then
+$A_r$ and $C_r$ are constant on every $\mathcal G$-orbit of differences.
+Thus \eqref{eq:two-replica-factorization} needs one joint overlap signature
+per orbit, rather than one per element of $G$.  An asymptotic family whose
+common stabilizer has only $2^{o(m+n)}$ difference orbits would therefore
+give a genuinely compressed exact evaluation of $U_g$.  The issue is then
+the inequality, not reconstruction of the full switching table.
 
 The hierarchy also has a sharp multiplicity obstruction.
 
@@ -834,9 +945,48 @@ $4+4$ &6&4&6&8&1&2&6\\
 Thus one character improves the certified gain in every displayed case and
 recovers the exact fixed-orbit cap at $3+4$.  At the other three exact
 targets, the counting obstruction forces the full quotient dimension.  This
-is finite evidence about the hierarchy, not an asymptotic shell theorem.  The
-two-replica condition \eqref{eq:two-replica-quotient} already certifies the
-displayed one-character gain at $3+3$ and $4+4$, but not at $3+4$ or $3+5$.
+is finite evidence about the hierarchy, not an asymptotic shell theorem.
+
+The collision audit below is at the displayed one-character target.  The
+column $R$ is the number of distinct joint overlap signatures in
+\eqref{eq:two-replica-factorization}; $q=T_g-S$, $Z=Z_g$, $M$ is the largest
+fiber, and $P=P_g$.  The last numeric column is the strict threshold in
+\eqref{eq:collision-normal-form}.
+\begin{center}
+\begin{tabular}{c|rrrrrrr|c}
+\toprule
+split & $g$ & $R$ & $q$ & $Z$ & $M$ & $P$ & $\binom{q+1}{2}$ & occupancy\\
+\midrule
+$3+3$ &4&4 & 2& 4&2& 6&  3&certifies\\
+$3+4$ &6&14&17& 8&4&35&153&rules out\\
+$3+5$ &4&30&11&18&4&36& 66&rules out\\
+$4+4$ &6&15& 4&22&2&26& 10&certifies\\
+\bottomrule
+\end{tabular}
+\end{center}
+At $3+3$ and $4+4$, the lower occupancy bound already forces the global
+two-replica criterion.  At $3+4$ and $3+5$, the sharp bounded-fiber upper
+bound rules it out, even though a single character succeeds.  Thus the
+unfiltered statistic $U_g$ can lose a useful coefficient by averaging its
+energy over all $S-1$ nontrivial characters.
+
+This diagnosis suggests a filtered replacement.  For any specified family
+$\mathcal C$ of nontrivial characters,
+\begin{equation}\label{eq:filtered-two-replica}
+ \sum_{\chi\in\mathcal C}|\widehat V_g(\chi)|^2
+ >|\mathcal C|(T_g-S)^2
+\end{equation}
+forces some $\chi\in\mathcal C$ to satisfy \eqref{eq:one-character}.  It is
+still a two-replica quantity: with
+$K_{\mathcal C}(r)=\sum_{\chi\in\mathcal C}\chi(r)$, its left side equals
+\[
+ \sum_{s,s'\in G}V_g(s)V_g(s')K_{\mathcal C}(s+s').
+\]
+The viable asymptotic target is therefore either a structured lower bound for
+the collision sum \eqref{eq:two-replica-factorization}, or a
+$2^{o(m+n)}$-sized explicit character family for which the filtered energy
+does not dilute.  The four exact cases distinguish these targets; they do not
+establish either asymptotically.
 
 The compact finite audit emphasizes why a positive defect is unavoidable.
 Literal subadditivity of $H$ fails already at $2+2$:
@@ -1191,7 +1341,13 @@ evaluated on the same spin assignment.  Theorem~\ref{thm:quotient-shell}
 gives a second precise route: find an explicit quotient of dimension
 $o(m+n)$ whose stratified extreme shells certify the recurrence-scale gain.
 The multiplicity obstruction shows why isolated exact-optimum switchings are
-the wrong target for that route.
+the wrong target for that route.  Proposition~\ref{prop:two-replica-factorization}
+reduces the global second moment to simultaneous shell-overlap types, while
+Proposition~\ref{prop:two-replica-occupancy} gives sharp scalar tests for when
+that moment must succeed or cannot succeed.  The finite failures of the
+global moment despite a successful character show that the alternative is a
+filtered family as in \eqref{eq:filtered-two-replica}, not another unlocalized
+average over the entire dual group.
 \end{problem}
 
 \begin{problem}[absolute field]
@@ -1254,7 +1410,9 @@ computes $\min_A M(A)$ exactly through order $6$, audits all scalar
 composition defects through total order $15$, and exhausts the bridges for
 four selected fixed-child cases.  On four explicit bridge witnesses it also
 computes every switching violation count, the unstratified and best
-one-character gains, and the quotient-dimension counting obstruction.
+one-character gains, the quotient-dimension counting obstruction, the exact
+two-replica collision profile and its sharp occupancy bounds, and the number
+of distinct simultaneous shell-overlap signatures.
 
 The file \texttt{results/external\_verification.json} records the two pinned
 external revisions used in the 2026-08-02 audit, SHA-256 hashes of the relevant
@@ -1280,8 +1438,12 @@ is now a power-saving composition bound only for comparable blocks; the
 localization theorem proves that no all-splits estimate is needed.  The
 quotient-shell hierarchy now supplies an exact intermediate state between
 unstratified histograms and the full bridge response, while its multiplicity
-bound rules out compression of isolated gains.  No candidate pair of separated infinite
-subsequences is known.
+bound rules out compression of isolated gains.  The two-replica factorization
+further shows that common symmetry can compress the required overlap data,
+but the unfiltered second moment can dilute the decisive character; the live
+refinement is a structured overlap bound or a subexponential filtered
+character family.  No candidate pair of separated infinite subsequences is
+known.
 
 \bibliographystyle{plain}
 \bibliography{references}

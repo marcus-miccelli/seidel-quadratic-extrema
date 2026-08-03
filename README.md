@@ -67,7 +67,7 @@ External research code is not vendored into this compact repository. The pinned 
 
 1. Decide whether $L_n$ converges.
 2. Prove a uniform power-saving composition bound for comparable blocks, $1/2\le m/n\le2$. The report proves that this restricted case alone would make $H(n)/n$ converge.
-3. Find an explicit sublinear-dimensional quotient whose stratified shells certify the recurrence-scale gain on comparable blocks.
+3. Find an explicit sublinear-dimensional quotient or subexponential filtered character family whose shell overlaps certify the recurrence-scale gain on comparable blocks.
 4. Resolve the adaptive Gibbs-bridge/noisy-code obstruction identified in the continuation map.
 5. Construct an infinite family uniformly below the spectral ceiling.
 6. Replace the remaining historical finite-order audits with compact standalone proof certificates.

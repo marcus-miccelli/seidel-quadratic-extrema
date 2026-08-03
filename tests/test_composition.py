@@ -90,6 +90,11 @@ class ExactBridgeTests(unittest.TestCase):
         self.assertEqual(record["histogram_gain"], 2)
         self.assertEqual(record["one_character_gain"], 4)
         self.assertTrue(record["one_character_second_moment_certifies"])
+        self.assertEqual(record["joint_overlap_type_count"], 4)
+        occupancy = record["one_character_target_occupancy"]
+        self.assertEqual(occupancy["collision_count"], 6)
+        self.assertEqual(occupancy["collision_threshold"], 3)
+        self.assertTrue(occupancy["occupancy_lower_bound_certifies"])
         self.assertEqual(record["exact_gain"], 6)
         self.assertEqual(record["exact_parent_cap"], 5)
         self.assertEqual(record["exact_target_zero_switching_count"], 1)
@@ -108,7 +113,30 @@ class ExactBridgeTests(unittest.TestCase):
         self.assertEqual(record["histogram_parent_cap"], 11)
         self.assertEqual(record["one_character_parent_cap"], 9)
         self.assertFalse(record["one_character_second_moment_certifies"])
+        self.assertEqual(record["joint_overlap_type_count"], 14)
+        occupancy = record["one_character_target_occupancy"]
+        self.assertEqual(occupancy["collision_count"], 35)
+        self.assertEqual(occupancy["collision_threshold"], 153)
+        self.assertEqual(occupancy["maximum_occupancy_collision_count"], 49)
+        self.assertTrue(occupancy["bounded_fiber_upper_bound_obstructs"])
         self.assertEqual(record["exact_parent_cap"], 9)
+
+    def test_two_replica_collision_normal_form(self) -> None:
+        eta = [0, 0, 2, 4]
+        zeta = [0, 2, 0, 2]
+        counts = composition.violation_counts(eta, zeta, 3)
+        occupancy = composition.two_replica_occupancy_record(counts)
+        size = len(counts)
+        total = sum(counts)
+        direct_parseval_gap = (
+            size * sum(value * value for value in counts) - total * total
+            - (size - 1) * (total - size) ** 2
+        )
+
+        self.assertEqual(
+            direct_parseval_gap > 0,
+            occupancy["collision_count"] > occupancy["collision_threshold"],
+        )
 
 
 if __name__ == "__main__":

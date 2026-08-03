@@ -15,6 +15,7 @@ From a source checkout on PowerShell:
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import itertools
 import json
 from pathlib import Path
@@ -142,6 +143,87 @@ def walsh_hadamard(values: list[int]) -> list[int]:
     return transformed
 
 
+def violation_counts(eta: list[int], zeta: list[int], gain: int) -> list[int]:
+    """Return the bad-pair addition-fiber sizes for every switching."""
+    if len(eta) != len(zeta):
+        raise ValueError("eta and zeta must have the same length")
+    size = len(eta)
+    if size == 0 or size & (size - 1):
+        raise ValueError("eta and zeta must be indexed by a nonempty two-group")
+    return [
+        sum(eta[state] + zeta[state ^ shift] < gain for state in range(size))
+        for shift in range(size)
+    ]
+
+
+def two_replica_occupancy_record(counts: list[int]) -> dict[str, int | bool]:
+    """Audit the sharp occupancy bounds for the two-replica criterion."""
+    size = len(counts)
+    if size == 0 or any(value < 0 for value in counts):
+        raise ValueError("fiber counts must be a nonempty nonnegative list")
+    total = sum(counts)
+    if total < size:
+        raise ValueError("the two-replica occupancy audit requires total >= size")
+    zero_count = counts.count(0)
+    positive_fibers = size - zero_count
+    maximum = max(counts)
+    excess = total - size
+    collisions = sum(value * (value - 1) // 2 for value in counts)
+    threshold = excess * (excess + 1) // 2
+
+    balanced_level, balanced_remainder = divmod(total, positive_fibers)
+    minimum_collisions = (
+        positive_fibers * balanced_level * (balanced_level - 1) // 2
+        + balanced_remainder * balanced_level
+    )
+
+    if maximum == 1:
+        maximum_collisions = 0
+    else:
+        extra_entries = total - positive_fibers
+        full_fibers, final_extra = divmod(extra_entries, maximum - 1)
+        maximum_collisions = (
+            full_fibers * maximum * (maximum - 1) // 2
+            + final_extra * (final_extra + 1) // 2
+        )
+
+    assert minimum_collisions <= collisions <= maximum_collisions
+    return {
+        "bounded_fiber_upper_bound_obstructs": maximum_collisions <= threshold,
+        "collision_count": collisions,
+        "collision_threshold": threshold,
+        "excess_violation_count": excess,
+        "maximum_fiber_size": maximum,
+        "maximum_occupancy_collision_count": maximum_collisions,
+        "minimum_occupancy_collision_count": minimum_collisions,
+        "occupancy_lower_bound_certifies": minimum_collisions > threshold,
+        "total_violation_count": total,
+        "two_replica_certifies": collisions > threshold,
+        "zero_fiber_count": zero_count,
+    }
+
+
+def joint_overlap_type_count(eta: list[int], zeta: list[int]) -> int:
+    """Count distinct simultaneous shell-autocorrelation signatures."""
+    if len(eta) != len(zeta):
+        raise ValueError("eta and zeta must have the same length")
+    size = len(eta)
+    if size == 0 or size & (size - 1):
+        raise ValueError("eta and zeta must be indexed by a nonempty two-group")
+    signatures = set()
+    for difference in range(size):
+        eta_overlap = Counter(
+            (eta[state], eta[state ^ difference]) for state in range(size)
+        )
+        zeta_overlap = Counter(
+            (zeta[state], zeta[state ^ difference]) for state in range(size)
+        )
+        signatures.add(
+            (tuple(sorted(eta_overlap.items())), tuple(sorted(zeta_overlap.items())))
+        )
+    return len(signatures)
+
+
 def quotient_shell_record(
     left: tuple[tuple[int, ...], ...],
     right: tuple[tuple[int, ...], ...],
@@ -183,21 +265,13 @@ def quotient_shell_record(
     bridge_cap = max(zeta_raw)
     zeta = [bridge_cap - value for value in zeta_raw]
 
-    def violations(gain: int) -> list[int]:
-        return [
-            sum(
-                eta[state] + zeta[state ^ shift] < gain
-                for state in range(state_count)
-            )
-            for shift in range(state_count)
-        ]
-
     histogram_gain = one_character_gain = exact_gain = 0
     one_character_mask = 0
     one_character_second_moment_certifies = False
+    one_character_counts: list[int] | None = None
     exact_counts: list[int] | None = None
     for gain in range(left_cap + right_cap + bridge_cap + 2):
-        counts = violations(gain)
+        counts = violation_counts(eta, zeta, gain)
         total = sum(counts)
         if total < state_count:
             histogram_gain = gain
@@ -212,11 +286,18 @@ def quotient_shell_record(
                     or state_count * sum(value * value for value in counts) - total * total
                     > (state_count - 1) * (total - state_count) ** 2
                 )
+                one_character_counts = counts
         if min(counts) == 0:
             exact_gain = gain
             exact_counts = counts
 
     assert exact_counts is not None
+    assert one_character_counts is not None
+    one_character_occupancy = (
+        two_replica_occupancy_record(one_character_counts)
+        if sum(one_character_counts) >= state_count
+        else None
+    )
     zero_count = sum(value == 0 for value in exact_counts)
     positive_values = [value for value in exact_counts if value > 0]
     minimum_positive = min(positive_values) if positive_values else 0
@@ -249,10 +330,12 @@ def quotient_shell_record(
         "histogram_gain": histogram_gain,
         "histogram_parent_cap": baseline - histogram_gain,
         "counting_bound_maximum_coset_size": maximum_certifying_coset_size,
+        "joint_overlap_type_count": joint_overlap_type_count(eta, zeta),
         "one_character_gain": one_character_gain,
         "one_character_mask": one_character_mask,
         "one_character_parent_cap": baseline - one_character_gain,
         "one_character_second_moment_certifies": one_character_second_moment_certifies,
+        "one_character_target_occupancy": one_character_occupancy,
         "orientation": orientation,
         "orders": [m, n],
         "state_count": state_count,
@@ -370,6 +453,14 @@ def composition_results(values_path: Path = DEFAULT_VALUES) -> dict[str, Any]:
             "criterion": (
                 "for violation counts V(s), the histogram test is sum_s V(s)<|G|; "
                 "one character succeeds when sum_s V(s)-max_chi|sum_s chi(s)V(s)|<|G|"
+            ),
+            "collision_normal_form": (
+                "when T=sum_s V(s)=|G|+q, the global two-replica test is "
+                "equivalent to sum_s binom(V(s),2)>binom(q+1,2)"
+            ),
+            "overlap_type_definition": (
+                "a joint type is one distinct pair of eta- and zeta-shell "
+                "autocorrelation tables indexed by a switching difference"
             ),
             "scope": "four fixed child, orientation, and bridge witnesses",
             "two_replica_criterion": (
