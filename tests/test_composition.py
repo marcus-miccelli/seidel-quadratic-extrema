@@ -19,7 +19,8 @@ class ScalarCompositionTests(unittest.TestCase):
         self.assertEqual(composition.h_relation(10, 3, 4), ("greater", 33075))
 
     def test_reported_value_audit_summary(self) -> None:
-        summary = composition.composition_results()["scalar_audit"]
+        payload = composition.composition_results()
+        summary = payload["scalar_audit"]
         self.assertEqual(summary["pair_count"], 42)
         self.assertEqual(summary["comparable_pair_count"], 24)
         self.assertEqual(summary["positive_pair_count"], 21)
@@ -29,6 +30,20 @@ class ScalarCompositionTests(unittest.TestCase):
              summary["largest_positive"]["right_order"]),
             (5, 6),
         )
+        quotient_cases = {
+            tuple(row["orders"]): row
+            for row in payload["quotient_shell_audit"]["cases"]
+        }
+        six_plus_six = quotient_cases[(6, 6)][
+            "one_character_target_filtered_spectrum"
+        ]
+        self.assertEqual(six_plus_six["boundary_family_best_mask"], 1023)
+        self.assertEqual(six_plus_six["minimum_even_moment_power"], 21)
+        six_plus_seven = quotient_cases[(6, 7)][
+            "one_character_target_filtered_spectrum"
+        ]
+        self.assertEqual(six_plus_seven["boundary_family_size"], 927)
+        self.assertEqual(six_plus_seven["minimum_even_moment_power"], 3)
 
 
 class ExactBridgeTests(unittest.TestCase):
@@ -137,6 +152,36 @@ class ExactBridgeTests(unittest.TestCase):
             direct_parseval_gap > 0,
             occupancy["collision_count"] > occupancy["collision_threshold"],
         )
+
+    def test_fast_violation_convolution_matches_direct_counts(self) -> None:
+        eta = [0, 2, 4, 2, 0, 6, 2, 4]
+        zeta = [4, 0, 2, 6, 2, 4, 0, 2]
+        for gain in range(9):
+            with self.subTest(gain=gain):
+                direct = [
+                    sum(
+                        eta[state] + zeta[state ^ shift] < gain
+                        for state in range(len(eta))
+                    )
+                    for shift in range(len(eta))
+                ]
+                self.assertEqual(
+                    composition.violation_counts(eta, zeta, gain), direct
+                )
+
+    def test_any_character_can_be_isolated_in_the_abstract_shell_model(self) -> None:
+        for character in range(1, 8):
+            with self.subTest(character=character):
+                witness = composition.exclusive_character_shell_witness(
+                    3, character
+                )
+                self.assertEqual(
+                    witness["nontrivial_fourier_support"], [character]
+                )
+                self.assertGreater(
+                    witness["character_coefficient"],
+                    witness["success_threshold"],
+                )
 
 
 if __name__ == "__main__":

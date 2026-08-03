@@ -31,6 +31,8 @@
     {"id": "composition.quotient_second_moment", "claim": "A strict Parseval inequality involving the first two moments of switching violation counts forces a successful one-character quotient", "basis": "Walsh Parseval and averaging over nontrivial characters"},
     {"id": "composition.quotient_overlap_factorization", "claim": "The two-replica statistic is the addition-fiber collision energy of the bad-pair set and factors exactly through simultaneous eta- and zeta-shell autocorrelation tables", "basis": "expand equal-sum bad-pair collisions by their common group difference"},
     {"id": "composition.quotient_collision_bounds", "claim": "The global two-replica criterion is exactly P>binom(q+1,2), with a sharp lower collision bound from total count and zero fibers and a sharp upper bound after imposing the maximum fiber size", "basis": "integer collision normal form and convex extremal occupancy profiles"},
+    {"id": "composition.higher_replica", "claim": "The 2p-th Fourier energy is an exact 2p-replica zero-sum statistic; beyond the histogram threshold, its hierarchy eventually detects every successful one-character certificate", "basis": "character orthogonality and convergence of finite lp norms to the maximum coefficient"},
+    {"id": "barrier.fixed_filter", "claim": "No universal data-independent proper character filter can work in the abstract quotient-shell model", "basis": "two-level kernel shells whose violation spectrum is supported on any prescribed nontrivial character"},
     {"id": "conference.local", "claim": "Every symmetric conference sequence has liminf M(C_n)/(n sqrt(n-1)) >= 0.6894707435...", "basis": "universal aligned-local-field law and spectrally certified random flips"},
     {"id": "conference.stability", "claim": "The conference coefficient survives o(n^(3/2))-edge perturbations", "basis": "edge-Hamming estimate |M(A)-M(C)| <= 4h"},
     {"id": "conference.cumulants", "claim": "Every fixed normalized even conference cumulant has the orthogonal-model Catalan limit", "basis": "connected diagram reduction and fixed-diagram traffic universality"},
@@ -50,7 +52,7 @@
     {"id": "composition.power_defect", "question": "Can one prove a uniform power-saving defect for H(m+n) on comparable splits 1/2 <= m/n <= 2? The comparable case alone suffices for convergence."},
     {"id": "composition.noisy_code", "question": "Can the least-likely-output path in the adaptive Gibbs bridge be controlled without reconstructing every posterior response?"},
     {"id": "composition.quotient_power", "question": "Can a sublinear-dimensional quotient expose an exponentially favorable shell sector that certifies the recurrence-scale gain on every comparable split?"},
-    {"id": "composition.quotient_overlap", "question": "Can common symmetry force the collision threshold at recurrence-scale gain, or can a subexponential filtered character family retain the Fourier energy diluted by the global two-replica statistic?"},
+    {"id": "composition.quotient_overlap", "question": "Can the polynomial boundary-degree character family, or another Seidel-specific data-dependent filter, retain a recurrence-scale coefficient on every comparable split?"},
     {"id": "absolute_field.universal", "question": "Does the absolute-field target hold in the remaining dense overlapping-correlation regime? This route now gives a sub-best universal constant but retains structural value."},
     {"id": "construction", "question": "Is there an infinite family uniformly below the spectral ceiling?"},
     {"id": "rectangular", "question": "What is the proportional rectangular integrality gap, beginning with the 8 by 16 finite case?"},
@@ -70,6 +72,7 @@
   "numerical_only": [
     {"id": "cut.balance14", "observation": "All 95199 order-14 classes with M <= 50 were balanced."},
     {"id": "single_split.estimate", "observation": "Measured proportional rectangular ratios suggest a single-split coefficient near 0.335."},
-    {"id": "split_field.moments", "observation": "Sampled proportional split increments track Gaussian moment growth through moderate orders."}
+    {"id": "split_field.moments", "observation": "Sampled proportional split increments track Gaussian moment growth through moderate orders."},
+    {"id": "composition.boundary_filter", "observation": "The boundary-degree radius-two family contains a best successful character in all six explicit quotient-shell witnesses; the required higher-replica half-order ranges from 1 to 21."}
   ]
 }

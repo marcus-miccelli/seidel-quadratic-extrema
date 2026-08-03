@@ -143,17 +143,150 @@ def walsh_hadamard(values: list[int]) -> list[int]:
     return transformed
 
 
-def violation_counts(eta: list[int], zeta: list[int], gain: int) -> list[int]:
-    """Return the bad-pair addition-fiber sizes for every switching."""
+def _violation_counter(eta: list[int], zeta: list[int]):
+    """Precompute shell spectra and return an exact gain-to-fibers map."""
     if len(eta) != len(zeta):
         raise ValueError("eta and zeta must have the same length")
     size = len(eta)
     if size == 0 or size & (size - 1):
         raise ValueError("eta and zeta must be indexed by a nonempty two-group")
+
+    eta_spectra = []
+    for level in sorted(set(eta)):
+        indicator = [int(value == level) for value in eta]
+        eta_spectra.append((level, walsh_hadamard(indicator)))
+    zeta_spectra: dict[int, list[int]] = {}
+
+    def counts(gain: int) -> list[int]:
+        spectrum = [0] * size
+        for level, eta_spectrum in eta_spectra:
+            threshold = gain - level
+            if threshold not in zeta_spectra:
+                zeta_spectra[threshold] = walsh_hadamard(
+                    [int(value < threshold) for value in zeta]
+                )
+            zeta_spectrum = zeta_spectra[threshold]
+            for character in range(size):
+                spectrum[character] += (
+                    eta_spectrum[character] * zeta_spectrum[character]
+                )
+        inverse = walsh_hadamard(spectrum)
+        assert all(value % size == 0 for value in inverse)
+        return [value // size for value in inverse]
+
+    return counts
+
+
+def violation_counts(eta: list[int], zeta: list[int], gain: int) -> list[int]:
+    """Return the bad-pair addition-fiber sizes for every switching."""
+    return _violation_counter(eta, zeta)(gain)
+
+
+def intrinsic_character_degree(mask: int, width: int) -> int:
+    """Return the even-subset degree represented in a projective block."""
+    weight = (mask & ((1 << width) - 1)).bit_count()
+    return weight + (weight & 1)
+
+
+def boundary_character_masks(m: int, n: int, radius: int = 2) -> list[int]:
+    """Return characters of low degree or codegree in both blocks."""
+    if m < 1 or n < 1 or radius < 0:
+        raise ValueError("orders must be positive and radius nonnegative")
+    left_width, right_width = m - 1, n - 1
     return [
-        sum(eta[state] + zeta[state ^ shift] < gain for state in range(size))
-        for shift in range(size)
+        mask
+        for mask in range(1, 1 << (left_width + right_width))
+        if min(
+            (degree_left := intrinsic_character_degree(mask, left_width)),
+            m - degree_left,
+        )
+        <= radius
+        and min(
+            (
+                degree_right := intrinsic_character_degree(
+                    mask >> left_width, right_width
+                )
+            ),
+            n - degree_right,
+        )
+        <= radius
     ]
+
+
+def filtered_spectrum_record(
+    transform: list[int], m: int, n: int
+) -> dict[str, int | bool | None]:
+    """Audit boundary-degree filtering and the even-moment hierarchy."""
+    size = len(transform)
+    if size != 1 << (m + n - 2):
+        raise ValueError("transform length does not match the block orders")
+    total = transform[0]
+    threshold = total - size
+    if threshold < 0:
+        raise ValueError("filtered audit requires a target beyond first moment")
+    family = boundary_character_masks(m, n)
+    boundary_mask = max(family, key=lambda mask: abs(transform[mask]))
+    boundary_best = abs(transform[boundary_mask])
+    best = max(map(abs, transform[1:]))
+    minimum_power = None
+    if best > threshold:
+        power = 1
+        while True:
+            if sum(abs(value) ** (2 * power) for value in transform[1:]) > (
+                (size - 1) * threshold ** (2 * power)
+            ):
+                minimum_power = power
+                break
+            power += 1
+    return {
+        "best_character_coefficient": best,
+        "boundary_degree_radius": 2,
+        "boundary_family_best_coefficient": boundary_best,
+        "boundary_family_best_mask": boundary_mask,
+        "boundary_family_size": len(family),
+        "boundary_family_succeeds": boundary_best > threshold,
+        "minimum_even_moment_power": minimum_power,
+        "nonzero_character_count": sum(value != 0 for value in transform[1:]),
+        "successful_character_count": sum(
+            abs(value) > threshold for value in transform[1:]
+        ),
+        "success_threshold": threshold,
+    }
+
+
+def exclusive_character_shell_witness(
+    dimension: int, character_mask: int
+) -> dict[str, int | list[int]]:
+    """Construct abstract two-level shells supported on one character."""
+    if dimension < 2:
+        raise ValueError("dimension must be at least two")
+    size = 1 << dimension
+    if character_mask <= 0 or character_mask >= size:
+        raise ValueError("character_mask must be nontrivial in the group")
+    kernel = {
+        index
+        for index in range(size)
+        if (index & character_mask).bit_count() % 2 == 0
+    }
+    eta = [int(index not in kernel) for index in range(size)]
+    zeta = list(eta)
+    counts = violation_counts(eta, zeta, 1)
+    transform = walsh_hadamard(counts)
+    nontrivial_support = [
+        mask for mask in range(1, size) if transform[mask] != 0
+    ]
+    assert nontrivial_support == [character_mask]
+    total = transform[0]
+    return {
+        "character_coefficient": abs(transform[character_mask]),
+        "character_mask": character_mask,
+        "dimension": dimension,
+        "fiber_sizes": counts,
+        "nontrivial_fourier_support": nontrivial_support,
+        "state_count": size,
+        "success_threshold": total - size,
+        "total_violation_count": total,
+    }
 
 
 def two_replica_occupancy_record(counts: list[int]) -> dict[str, int | bool]:
@@ -269,9 +402,11 @@ def quotient_shell_record(
     one_character_mask = 0
     one_character_second_moment_certifies = False
     one_character_counts: list[int] | None = None
+    one_character_spectrum: list[int] | None = None
     exact_counts: list[int] | None = None
+    count_violations = _violation_counter(eta, zeta)
     for gain in range(left_cap + right_cap + bridge_cap + 2):
-        counts = violation_counts(eta, zeta, gain)
+        counts = count_violations(gain)
         total = sum(counts)
         if total < state_count:
             histogram_gain = gain
@@ -287,12 +422,14 @@ def quotient_shell_record(
                     > (state_count - 1) * (total - state_count) ** 2
                 )
                 one_character_counts = counts
+                one_character_spectrum = transform
         if min(counts) == 0:
             exact_gain = gain
             exact_counts = counts
 
     assert exact_counts is not None
     assert one_character_counts is not None
+    assert one_character_spectrum is not None
     one_character_occupancy = (
         two_replica_occupancy_record(one_character_counts)
         if sum(one_character_counts) >= state_count
@@ -335,6 +472,9 @@ def quotient_shell_record(
         "one_character_mask": one_character_mask,
         "one_character_parent_cap": baseline - one_character_gain,
         "one_character_second_moment_certifies": one_character_second_moment_certifies,
+        "one_character_target_filtered_spectrum": filtered_spectrum_record(
+            one_character_spectrum, m, n
+        ),
         "one_character_target_occupancy": one_character_occupancy,
         "orientation": orientation,
         "orders": [m, n],
@@ -390,6 +530,8 @@ def composition_results(values_path: Path = DEFAULT_VALUES) -> dict[str, Any]:
         3: (-1,),
         4: (-1, -1, 1),
         5: (-1, -1, 1, 1, -1, 1),
+        6: (1, 1, -1, -1, -1, -1, 1, 1, -1, 1),
+        7: (1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, 1, 1, -1, -1),
     }
     representatives = {
         order: signing(order, key) for order, key in representative_keys.items()
@@ -428,6 +570,8 @@ def composition_results(values_path: Path = DEFAULT_VALUES) -> dict[str, Any]:
             (3, 4, 3, 1),
             (3, 5, 3, 1),
             (4, 4, 18, -1),
+            (6, 6, 6110448725, 1),
+            (6, 7, 1410301925442, 1),
         )
     ]
 
@@ -448,6 +592,14 @@ def composition_results(values_path: Path = DEFAULT_VALUES) -> dict[str, Any]:
         },
         "normalization": "F and all caps use Q_A(x)=sum_{i<j} a_ij x_i x_j",
         "quotient_shell_audit": {
+            "abstract_fixed_filter_obstruction": {
+                "classification": "exact abstract shell-model construction",
+                "scope_note": (
+                    "the two-level shells need not arise from a Seidel block and "
+                    "only rule out universal data-independent proper filters"
+                ),
+                "witness": exclusive_character_shell_witness(4, 7),
+            },
             "cases": quotient_cases,
             "classification": "exact finite computation",
             "criterion": (
@@ -458,11 +610,20 @@ def composition_results(values_path: Path = DEFAULT_VALUES) -> dict[str, Any]:
                 "when T=sum_s V(s)=|G|+q, the global two-replica test is "
                 "equivalent to sum_s binom(V(s),2)>binom(q+1,2)"
             ),
+            "boundary_family_definition": (
+                "nontrivial characters whose intrinsic even-subset degree or "
+                "codegree is at most two in each block"
+            ),
             "overlap_type_definition": (
                 "a joint type is one distinct pair of eta- and zeta-shell "
                 "autocorrelation tables indexed by a switching difference"
             ),
-            "scope": "four fixed child, orientation, and bridge witnesses",
+            "scope": "six fixed child, orientation, and bridge witnesses",
+            "higher_replica_criterion": (
+                "when T>=|G|, for p>=1, "
+                "sum_{chi!=1}|Vhat(chi)|^(2p) > "
+                "(|G|-1)(T-|G|)^(2p) forces a successful character"
+            ),
             "two_replica_criterion": (
                 "for T=sum_s V(s)>=S=|G| and U=sum_s V(s)^2, "
                 "S*U-T^2>(S-1)(T-S)^2 forces a successful one-character quotient"

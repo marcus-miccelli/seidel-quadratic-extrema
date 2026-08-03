@@ -81,7 +81,9 @@ quotient-stratified shell theorem interpolates exactly between marginal
 histograms and exhaustive bridge response, with a multiplicity bound showing
 when such compression is impossible.  Its global two-replica test is an
 addition-fiber collision inequality with sharp occupancy bounds, exposing
-both a symmetry reduction and a Fourier-dilution obstruction.
+both a symmetry reduction and a Fourier-dilution obstruction.  Higher
+replicas recover every successful character eventually, but an abstract
+construction rules out every universal data-independent proper filter.
 \end{abstract}
 
 \noindent\fbox{\parbox{0.95\textwidth}{%
@@ -924,7 +926,7 @@ Theorem~\ref{thm:comparable-splits}, and $L_n$ converges.  Proposition
 recurrence-scale gain supported by many switchings, rather than isolated
 exact parent optima.
 
-The public finite audit uses four fixed optimal-child bridge orbits.  The
+The public finite audit uses six fixed optimal-child bridge witnesses.  The
 columns give the gain certified by the unstratified histogram, by the best
 single character, and by exhaustive switching.  The final three columns
 refer to the exhaustive target: its number $Z$ of successful switchings, the
@@ -939,6 +941,8 @@ $3+3$ &4&2&4&6&1&4&4\\
 $3+4$ &5&4&6&6&8&1&0\\
 $3+5$ &6&2&4&6&1&2&6\\
 $4+4$ &6&4&6&8&1&2&6\\
+$6+6$ &10&2&4&8&1&10&10\\
+$6+7$ &11&2&4&10&1&8&11\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -961,6 +965,8 @@ $3+3$ &4&4 & 2& 4&2& 6&  3&certifies\\
 $3+4$ &6&14&17& 8&4&35&153&rules out\\
 $3+5$ &4&30&11&18&4&36& 66&rules out\\
 $4+4$ &6&15& 4&22&2&26& 10&certifies\\
+$6+6$ &4&21&848&212&4&1800&359976&rules out\\
+$6+7$ &4&254&520&972&8&3012&135460&rules out\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -985,8 +991,107 @@ $K_{\mathcal C}(r)=\sum_{\chi\in\mathcal C}\chi(r)$, its left side equals
 The viable asymptotic target is therefore either a structured lower bound for
 the collision sum \eqref{eq:two-replica-factorization}, or a
 $2^{o(m+n)}$-sized explicit character family for which the filtered energy
-does not dilute.  The four exact cases distinguish these targets; they do not
+does not dilute.  The six exact cases distinguish these targets; they do not
 establish either asymptotically.
+
+The vertex coordinates supply one polynomial-sized candidate.  A character
+of $\mathcal X_r$ is represented intrinsically by an even subset
+$E\subseteq[r]$.  Put
+\[
+ b_r(E)=\min\{|E|,r-|E|\},
+\]
+and let $\partial_2\widehat G$ contain the nontrivial pairs of block
+characters satisfying $b_m(E)\le2$ and $b_n(F)\le2$.  This boundary-degree
+family has size $O(m^2n^2)$.  In all six fixed witnesses it contains a best
+character, but at these orders it can still occupy a large fraction of the
+dual group.
+
+There is a complementary way to avoid second-moment dilution.  For an
+integer $p\ge1$, define
+\[
+ \mathcal E_{2p}
+ =\sum_{\chi\ne1}|\widehat V_g(\chi)|^{2p}.
+\]
+
+\begin{proposition}[higher-replica hierarchy]\label{prop:higher-replica}
+Assume $T_g\ge S$.  For every $p\ge1$,
+\begin{equation}\label{eq:higher-replica}
+ \mathcal E_{2p}
+ =S\!\!\sum_{\substack{s_1,\ldots,s_{2p}\in G\\
+                       s_1+\cdots+s_{2p}=0}}
+   \prod_{j=1}^{2p}V_g(s_j)-T_g^{2p}.
+\end{equation}
+If
+\begin{equation}\label{eq:higher-replica-criterion}
+ \mathcal E_{2p}>(S-1)(T_g-S)^{2p},
+\end{equation}
+then a nontrivial character satisfies \eqref{eq:one-character}.  Conversely,
+under the same assumption, whenever such a character exists,
+\eqref{eq:higher-replica-criterion} holds for some finite $p$.
+\end{proposition}
+
+\begin{proof}
+Expand the $2p$th powers and sum over all characters.  Character
+orthogonality leaves exactly the zero-sum tuples in
+\eqref{eq:higher-replica}; subtracting the trivial character gives the stated
+identity.  Inequality \eqref{eq:higher-replica-criterion} forces one of the
+$S-1$ summands to exceed $(T_g-S)^{2p}$.  Conversely, if
+$\max_{\chi\ne1}|\widehat V_g(\chi)|>T_g-S$, its normalized $2p$th power
+alone eventually exceeds $S-1$.
+\end{proof}
+
+The exact spectral diagnostics at the one-character target are:
+\begin{center}
+\begin{tabular}{c|rrrrr}
+\toprule
+split & $|\partial_2\widehat G|$ & $T_g-S$ &
+$\max_{\chi\ne1}|\widehat V_g(\chi)|$ & successful $\chi$ & $p_{\min}$\\
+\midrule
+$3+3$ &15&2&6&3&1\\
+$3+4$ &31&17&23&1&6\\
+$3+5$ &63&11&25&7&3\\
+$4+4$ &63&4&20&17&1\\
+$6+6$ &1023&848&1008&1&21\\
+$6+7$ &927&520&1992&2&3\\
+\bottomrule
+\end{tabular}
+\end{center}
+Here $p_{\min}$ is the first exact power satisfying
+\eqref{eq:higher-replica-criterion}.  In particular, the $6+6$ witness shows
+that passing from two replicas to a small fixed number of replicas need not
+recover a successful character quickly.  This remains finite evidence, not a
+lower bound on an asymptotic replica count.
+
+Finally, filtering cannot be chosen from the abstract group alone.
+
+\begin{proposition}[no universal proper filter]\label{prop:no-fixed-filter}
+Let $|G|=S\ge4$.  For every proper family $\mathcal C$ of nontrivial
+characters, there are nonnegative two-level functions $\eta,\zeta$ and a
+target $g$ such that exactly one nontrivial Fourier coefficient of $V_g$ is
+nonzero, it satisfies \eqref{eq:one-character}, and its character lies
+outside $\mathcal C$.
+\end{proposition}
+
+\begin{proof}
+Choose $\chi_0\notin\mathcal C$, let $K=\ker\chi_0$, and set
+$\eta=\zeta=0$ on $K$ and $1$ off $K$, with $g=1$.  Then
+$\mathcal B_g=K\times K$ and
+\[
+ V_g(s)=|K|\mathbf1_K(s).
+\]
+Its Fourier transform is supported exactly on
+$K^\perp=\{1,\chi_0\}$, with
+$T_g=|\widehat V_g(\chi_0)|=S^2/4$.  Thus $\chi_0$ satisfies
+\eqref{eq:one-character}, while every character in $\mathcal C$ has zero
+coefficient.
+\end{proof}
+
+This last construction is an obstruction in the abstract shell model, not a
+Seidel-matrix counterexample.  It proves that any asymptotically useful
+proper filter must exploit the quadratic/bilinear origin of $\eta,\zeta$ or
+be selected from their observed structure.  Boundary degree is now a precise
+candidate for such a theorem, rather than a consequence of quotient-shell
+averaging alone.
 
 The compact finite audit emphasizes why a positive defect is unavoidable.
 Literal subadditivity of $H$ fails already at $2+2$:
@@ -1347,7 +1452,11 @@ Proposition~\ref{prop:two-replica-occupancy} gives sharp scalar tests for when
 that moment must succeed or cannot succeed.  The finite failures of the
 global moment despite a successful character show that the alternative is a
 filtered family as in \eqref{eq:filtered-two-replica}, not another unlocalized
-average over the entire dual group.
+average over the entire dual group.  Proposition~\ref{prop:no-fixed-filter}
+shows that such a family must use Seidel-specific structure; the concrete
+candidate is the polynomial boundary-degree family, while
+Proposition~\ref{prop:higher-replica} supplies an exact higher-moment
+alternative.
 \end{problem}
 
 \begin{problem}[absolute field]
@@ -1408,11 +1517,13 @@ It validates Seidel inputs, evaluates $M(A)$ on the antipodal half-cube,
 enumerates every first-row-normalized labeled switching representative,
 computes $\min_A M(A)$ exactly through order $6$, audits all scalar
 composition defects through total order $15$, and exhausts the bridges for
-four selected fixed-child cases.  On four explicit bridge witnesses it also
+four selected fixed-child cases.  On six explicit bridge witnesses it also
 computes every switching violation count, the unstratified and best
 one-character gains, the quotient-dimension counting obstruction, the exact
 two-replica collision profile and its sharp occupancy bounds, and the number
-of distinct simultaneous shell-overlap signatures.
+of distinct simultaneous shell-overlap signatures.  It additionally checks
+the boundary-degree filter, the exact higher-replica threshold, and an
+abstract witness excluding any prescribed character filter.
 
 The file \texttt{results/external\_verification.json} records the two pinned
 external revisions used in the 2026-08-02 audit, SHA-256 hashes of the relevant
@@ -1442,8 +1553,10 @@ bound rules out compression of isolated gains.  The two-replica factorization
 further shows that common symmetry can compress the required overlap data,
 but the unfiltered second moment can dilute the decisive character; the live
 refinement is a structured overlap bound or a subexponential filtered
-character family.  No candidate pair of separated infinite subsequences is
-known.
+character family.  The boundary-degree family is a polynomial-sized concrete
+candidate, while the no-fixed-filter proposition proves that success cannot
+follow from abstract group structure alone.  No candidate pair of separated
+infinite subsequences is known.
 
 \bibliographystyle{plain}
 \bibliography{references}
